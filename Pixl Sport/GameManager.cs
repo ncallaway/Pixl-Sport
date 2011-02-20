@@ -36,19 +36,15 @@ namespace Pixl_Sport
         public Team Team1;
         public Team Team2;
         public List<Team> BothTeams = new List<Team>();
-        
-
-        /* Team Variables Should go here.
-
-        List<Players?> Example!
-
-        End of Team Variables          */
-
-
-
 
 
         public GameManager() { }
+
+        public void Initialize()
+        {
+            Team1.Initialize();
+            Team2.Initialize();
+        }
 
 
         //This itterates throught the current Rules and checks them. If they are broken it enforces them.
@@ -65,9 +61,10 @@ namespace Pixl_Sport
         public void Update(GameTime T)
         {
             if (running) Time = T.ElapsedGameTime.Milliseconds;
+        }
 
-
-
+        public void Draw(GameTime t, SpriteBatch b)
+        {
         }
 
 

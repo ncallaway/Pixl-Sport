@@ -20,7 +20,48 @@ namespace Pixl_Sport
 
         public int Score;
 
+        public void Initialize()
+        {
+            Members.Clear();
 
+            for (int i = 0; i < 7; i++) {
+                TeamMember m = new TeamMember(this);
+                m.OnField = true;
+                Members.Add(m);
+            }
+        }
 
+        public void SetupKickoff(bool left)
+        {
+            Vector2 min = new Vector2(0, 0);
+            Vector2 max = new Vector2(350, 432);
+
+            Vector2 rightOffset = new Vector2(350, 0);
+
+            if (!left) {
+                min += rightOffset;
+                max += rightOffset;
+            }
+
+            Random rand;
+
+            int offFieldOffset = 0;
+
+            foreach (TeamMember m in Members) {
+                if (m.OnField) {
+                    float posX = (float)rand.NextDouble();
+                    posX *= (max.X - min.X);
+                    posX += min.X;
+
+                    float posY = (float)rand.NextDouble();
+                    posY *= (max.Y - min.Y);
+                    posY += min.Y;
+
+                    m.Position = new Vector2(posX, posY);
+                } else {
+                    m.Position = new Vector2(min.X + offFieldOffset * 5, min.Y - 10);
+                }
+            }
+        }
     }
 }
