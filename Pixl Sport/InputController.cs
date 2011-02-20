@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 
 
-namespace PixlSport
+namespace Pixl_Sport
 {
     class InputController
     {

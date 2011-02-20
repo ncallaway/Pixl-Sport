@@ -14,13 +14,42 @@ namespace Pixl_Sport
 
         private Vector2 position;
         public Vector2 Position { get { return position; } set { position = value; } }
+        private float height;
+        
+        public BoundingBox Bounds
+        {
+            get
+            {
+                return new BoundingBox(new Vector3(position - Vector2.One, height), new Vector3(position + 2 * Vector2.One,height = 2f));
+            }
+        }
 
         private Vector2 direction;
         public Vector2 Direction { get { return direction; } }
 
+
         private float velocity;
 
-        private bool inAir;
+        public enum BallState
+        {
+            Held,
+            Flying,
+            Bouncing,
+            Dead
+
+
+        }
+
+        public BallState State;
+        public TeamMember Possessor;
+
+        public Ball()
+        {
+            height = 0f;
+            State = BallState.Dead;
+        }
+
+
 
         public void Draw(SpriteBatch batch, Texture2D pixels, Vector2 fieldOrigin, uint scaleSize)
         {
@@ -36,15 +65,36 @@ namespace Pixl_Sport
 
 
 
-        }
+            switch (State){
+                case BallState.Flying:
+                    position += direction*velocity;
+                   /* if(height <= 1f) 
+                    {
+                  // state = BallState.Bouncing;
+                    Random rand = new Random();
+                    direction = new Vector2((float)rand.NextDouble(), (float)(rand.NextDouble()));
+                    direction.Normalize();
+                    velocity /= 2;
+                   }*/
+                    break;
+                case BallState.Held:
+                    break;
+                case BallState.Bouncing:
+                    break;
+
+            
+            }
+       }
 
 
-        public void SendFlying(Vector2 direction, int force)
+        public void SendFlying(Vector2 direction,float time)
         {
+            this.direction = direction;
+            this.direction.Normalize();
 
+            velocity = direction.Length() / time;
 
-
-
+            State = BallState.Flying;
         }
 
 

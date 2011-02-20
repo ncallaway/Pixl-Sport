@@ -20,6 +20,12 @@ namespace Pixl_Sport
 
         public int Score;
 
+        public Team(String name)
+        {
+            teamName = name;
+            Score = 0;
+        }
+
         public void Initialize()
         {
             Members.Clear();
@@ -63,5 +69,19 @@ namespace Pixl_Sport
                 }
             }
         }
+
+
+
+        public void Update(GameTime T)
+        {
+            foreach (TeamMember TM in Members)
+            {
+                TM.Update(T);
+
+            }
+        }
+
+
+        }
     }
-}
+

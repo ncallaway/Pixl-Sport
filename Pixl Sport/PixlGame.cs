@@ -31,7 +31,7 @@ namespace Pixl_Sport
             graphics.PreferredBackBufferHeight = 768;
             Content.RootDirectory = "Content";
 
-            gm = new GameManager();
+            
         }
 
         /// <summary>
@@ -55,6 +55,7 @@ namespace Pixl_Sport
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            gm = new GameManager(this);
             gm.Load(Content);
 
             // TODO: use this.Content to load your game content here

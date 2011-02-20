@@ -25,9 +25,9 @@ namespace Pixl_Sport
         private Vector2 position;
         public Vector2 Position { get { return position; } set { position = value; } }
 
-        private BoundingBox Bounds {
+        public BoundingBox Bounds {
             get {
-                return new BoundingBox(new Vector3(position, 0f), new Vector3(position + Vector2.One, 0f));
+                return new BoundingBox(new Vector3(position- Vector2.One, 0f), new Vector3(position + 2*Vector2.One, 2f));
             } 
         }
 
@@ -38,8 +38,11 @@ namespace Pixl_Sport
 
         public bool HasBall = false;
         public bool PlayerControlled = false;
-        
 
+        public Ball HeldBall;
+
+        private int passStrength;
+        private int passAccuracy;
 
 
 
@@ -60,27 +63,31 @@ namespace Pixl_Sport
 
         public void Update(GameTime t)
         {
-            if (PlayerControlled)
-            {
-
-            }
             
+            if(!PlayerControlled) PlayerControlled = false;   /// PlaceMarker for AI Calls!
 
-        }
+            if (HasBall) HeldBall.Position = new Vector2(position.X, position.Y - 2);
+         }
 
         public void Pass(TeamMember TM)
         {
-
             Pass(TM.position);
-
-
         }
 
 
         public void Pass(Vector2 target)
-        {
-            
+        {   
+            Vector2 passVector = position- target;
+            float time = passVector.LengthSquared() / passStrength;
+            HeldBall.SendFlying(target, time);
+            HasBall = false;
+        }
 
+        public void GrabBall(Ball ball)
+        {
+            HeldBall = ball;
+            HasBall = true;
+            ball.Possessor = this;
         }
 
 

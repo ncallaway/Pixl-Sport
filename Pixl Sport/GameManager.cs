@@ -29,31 +29,45 @@ namespace Pixl_Sport
         private static int QUARTERTIME = 600000;
         private int time;
         public int Time { get { return time; } set { time = Math.Max(time - value, 0); } }
-        public int MinTime { get { return time / 6000; } }
+        public int MinTime { get { return time / 60000; } }
         public int SecTime { get { return (time / 1000) % 60; } }
         private bool running;
         public void StopClock() { running = false;}
+        List<Player> players = new List<Player>();
 
         public Team Team1;
         public Team Team2;
         public Ball Ball;
         public Field PlaySpace;
+        public Scoreboard Scoreboard;
         public List<Team> BothTeams = new List<Team>();
 
         private Texture2D pixels;
 
+        private PixlGame pixlGame;
 
-        public GameManager() {
+
+        public GameManager(PixlGame game) {
+            pixlGame = game;
             Initialize();
         }
 
         public void Initialize()
         {
             PlaySpace = new Field();
+            Scoreboard = new Scoreboard();
 
 
-            Team1 = new Team();
-            Team2 = new Team();
+            Vector2 windowSize = new Vector2(pixlGame.GraphicsDevice.Viewport.Width,
+                                                 pixlGame.GraphicsDevice.Viewport.Height);
+            Vector2 psp;
+            psp.X = (windowSize.X - PlaySpace.RenderSize.X) / 2f;
+            psp.Y = windowSize.Y - PlaySpace.RenderSize.Y - 50f;
+
+            PlaySpace.Position = psp;
+
+            Team1 = new Team("Broadway Bisons");
+            Team2 = new Team("New Jersey Devils");
             Ball = new Ball();
 
             Team1.Initialize();
@@ -62,28 +76,35 @@ namespace Pixl_Sport
             Team1.Color = Color.Cyan;
             Team2.Color = new Color(167, 167, 167);
 
+            time = QUARTERTIME;
+
             SetupKickoff();
 
             rulesList.Add(new OutOfBounds(this, new ScoreChange(-4)));
 
-            rulesList.Add(new Goal(this, new KickOff()));
+            rulesList.Add(new RunInGoal(this, new KickOff()));
 
             rulesList.Add(new OutOfBounds( this, new LightOnFire(Judgement.JudgementType.Team)));
-
+            players.Add(new Player(Team1));
         }
+
+        
 
         public void SetupKickoff()
         {
             Team1.SetupKickoff(true);
             Team2.SetupKickoff(false);
             Ball.Position = new Vector2(352f, 432f / 2f);
-        }
 
+            running = true;
+        }
 
          public void Load(ContentManager content)
         {
             pixels = content.Load<Texture2D>("line");
+            
             PlaySpace.Load(content);
+            Scoreboard.Load(content);
         }
 
 
@@ -101,17 +122,36 @@ namespace Pixl_Sport
         public void Update(GameTime T)
         {
             if (running) Time = T.ElapsedGameTime.Milliseconds;
+
+            TimeSpan remaining = new TimeSpan(0, MinTime, SecTime);
+
+            Scoreboard.HomeTeam = Team1.TeamName;
+            Scoreboard.AwayTeam = Team2.TeamName;
+            Scoreboard.HomeScore = Team1.Score;
+            Scoreboard.AwayScore = Team2.Score;
+            Scoreboard.TimeRemaining = remaining;
+
+
+            foreach (Player p in players)
+            {
+                p.Update(T);
+
+            }
+            Team1.Update(T);
+            Team2.Update(T);
+            if(Ball.State != Ball.BallState.Held) foreach (TeamMember TM in Team1.Members)
+            {
+                if(Ball.Bounds.Intersects(TM.Bounds)&& Ball.State != Ball.BallState.Held) TM.GrabBall(Ball);
+                
+            }
+            Ball.Update(T);
+
         }
 
         public void Draw(GameTime t, SpriteBatch b)
         {
+            Scoreboard.Draw(b, new Rectangle(0, 20, pixlGame.GraphicsDevice.Viewport.Width, 170));
             PlaySpace.Draw(b);
-
-
-            foreach (TeamMember m in Team1.Members) {
-                m.Draw(b, pixels, PlaySpace.FieldOrigin, PlaySpace.SizeMultiplier);
-            }
-
 
             foreach (TeamMember m in Team1.Members) {
                 m.Draw(b, pixels, PlaySpace.FieldOrigin, PlaySpace.SizeMultiplier);

@@ -19,7 +19,6 @@ namespace Pixl_Sport
           //  if ( /* ball is in the endzone*/ false) Enforce ;
 
         }
-
         
 
     }
