@@ -14,6 +14,7 @@ namespace Pixl_Sport
         private static readonly Color COLOR_SB_TEXT = new Color (207, 195, 11);
         private const int NAME_SCORE_PADDING = 30;
         private const int SCORE_SCORE_PADDING = 100;
+        private const int BOX_PADDING = 35;
 
         public String HomeTeam;
         public String AwayTeam;
@@ -60,6 +61,7 @@ namespace Pixl_Sport
             float baseY = (region.Height - 150f) / 2f + region.Top;
 
             drawTopLine(batch, baseX, width, baseY);
+            drawSecondLine(batch, baseX, width, baseY);
         }
 
         private void drawTopLine(SpriteBatch batch, float baseX, float width, float baseY)
@@ -106,6 +108,43 @@ namespace Pixl_Sport
             batch.DrawString(sbXtraLarge, homeScoreString, homeScorePos + centerOffset, COLOR_SB_TEXT);
             batch.DrawString(sbXtraLarge, awayScoreString, awayScorePos + centerOffset, COLOR_SB_TEXT);
             batch.DrawString(sbMedium, AwayTeam, awayTeamPos + centerOffset, COLOR_SB_TEXT);
+        }
+
+        private void drawSecondLine(SpriteBatch batch, float baseX, float width, float baseY)
+        {
+            String timeString = string.Format("{0:d2}", TimeRemaining.Minutes);
+            timeString += ":";
+            timeString += string.Format("{0:d2}", TimeRemaining.Seconds);
+
+            String qtrString = string.Format("{0:d1}", Qtr);
+
+            float qtrWidth = sbSmall.MeasureString("QTR").X;
+            float timeTextWidth = sbSmall.MeasureString("TIME").X;
+            float timeWidth = sbLarge.MeasureString(timeString).X;
+            float modeWidth = sbSmall.MeasureString("MODE").X;
+
+            float line2Width = qtrWidth + BOX_PADDING + timeWidth + BOX_PADDING + modeWidth;
+
+            float posX = (width - line2Width) / 2f + baseX;
+            batch.DrawString(sbSmall, "QTR", new Vector2(posX, baseY + 100), COLOR_SB_TEXT);
+
+            float qtrStrW = sbLarge.MeasureString(qtrString).X;
+            posX = (qtrWidth - qtrStrW) / 2f + posX;
+            batch.DrawString(sbLarge, qtrString, new Vector2(posX, baseY + 120), COLOR_SB_TEXT);
+
+            posX = (width - timeTextWidth) / 2f + baseX;
+            batch.DrawString(sbSmall, "TIME", new Vector2(posX, baseY + 100), COLOR_SB_TEXT);
+
+            posX = (width - timeWidth) / 2f + baseX;
+            batch.DrawString(sbLarge, timeString, new Vector2(posX, baseY + 120), COLOR_SB_TEXT);
+
+            posX = (width + line2Width) / 2f - modeWidth + baseX;
+            batch.DrawString(sbSmall, "MODE", new Vector2(posX, baseY + 100), COLOR_SB_TEXT);
+
+            float modeStrW = sbLarge.MeasureString(Mode).X;
+            posX = (modeWidth - modeStrW) / 2f + posX;
+            batch.DrawString(sbLarge, Mode, new Vector2(posX, baseY + 120), COLOR_SB_TEXT);
+
         }
     }
 }
