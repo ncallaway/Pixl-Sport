@@ -36,20 +36,54 @@ namespace Pixl_Sport
 
         public Team Team1;
         public Team Team2;
+        public Ball Ball;
+        public Field PlaySpace;
         public List<Team> BothTeams = new List<Team>();
-        
 
-        /* Team Variables Should go here.
-
-        List<Players?> Example!
-
-        End of Team Variables          */
+        private Texture2D pixels;
 
 
+        public GameManager() {
+            Initialize();
+        }
+
+        public void Initialize()
+        {
+            PlaySpace = new Field();
+
+            Team1 = new Team();
+            Team2 = new Team();
+            Ball = new Ball();
+
+            Team1.Initialize();
+            Team2.Initialize();
+
+            Team1.Color = Color.Cyan;
+            Team2.Color = new Color(167, 167, 167);
+
+            SetupKickoff();
+
+            rulesList.Add(new OutOfBounds(this, new ScoreChange(-4)));
+
+            rulesList.Add(new Goal(this, new KickOff()));
+
+            rulesList.Add(new OutOfBounds( this, new LightOnFire(Judgement.JudgementType.Team)));
+
+        }
+
+        public void SetupKickoff()
+        {
+            Team1.SetupKickoff(true);
+            Team2.SetupKickoff(false);
+            Ball.Position = new Vector2(352f, 432f / 2f);
+        }
 
 
-
-        public GameManager() {}
+        public void Load(ContentManager content)
+        {
+            pixels = content.Load<Texture2D>("line");
+            PlaySpace.Load(content);
+        }
 
 
         //This itterates throught the current Rules and checks them. If they are broken it enforces them.
@@ -66,9 +100,21 @@ namespace Pixl_Sport
         public void Update(GameTime T)
         {
             if (running) Time = T.ElapsedGameTime.Milliseconds;
+        }
 
+        public void Draw(GameTime t, SpriteBatch b)
+        {
+            PlaySpace.Draw(b);
 
+            foreach (TeamMember m in Team1.Members) {
+                m.Draw(b, pixels, PlaySpace.FieldOrigin, PlaySpace.SizeMultiplier);
+            }
 
+            foreach (TeamMember m in Team2.Members) {
+                m.Draw(b, pixels, PlaySpace.FieldOrigin, PlaySpace.SizeMultiplier);
+            }
+
+            Ball.Draw(b, pixels, PlaySpace.FieldOrigin, PlaySpace.SizeMultiplier);
         }
 
 

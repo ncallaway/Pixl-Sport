@@ -21,7 +21,28 @@ namespace Pixl_Sport
 
 
 
-         public abstract void Enforce(Team T, TeamMember TM);
+         public virtual void Enforce(Team T, TeamMember TM)
+         {
+
+             manager.StopClock();
+
+             switch (assignedJudgement.Judged)
+             {
+                 case Judgement.JudgementType.Team:
+                     assignedJudgement.Execute(T);
+                     break;
+                 case Judgement.JudgementType.TeamMember:
+                     assignedJudgement.Execute(TM);
+                     break;
+                 case Judgement.JudgementType.Global:
+                     assignedJudgement.Execute(manager);
+                     break;
+                 
+             }
+
+
+
+         }
          
      
 

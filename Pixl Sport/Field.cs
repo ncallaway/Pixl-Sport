@@ -25,9 +25,11 @@ namespace Pixl_Sport
         private bool loaded;
 
         public Vector2 Position { get { return position; } set { position = value; } }
-        public uint SizeMultiplier { get { return sizeMultiplier; } set { if (value > 0) { sizeMultiplier = value; } } }
+        public Vector2 FieldOrigin { get { return position + PADDING_SIZE; } }
+        
         public Vector2 RenderSize { get { return sizeMultiplier * (size + (2 * PADDING_SIZE)); } }
         public Vector2 Size { get { return sizeMultiplier * size; } }
+        public uint SizeMultiplier { get { return sizeMultiplier; } set { if (value > 0) { sizeMultiplier = value; } } }
 
         private Vector2 position;
         private Vector2 size;

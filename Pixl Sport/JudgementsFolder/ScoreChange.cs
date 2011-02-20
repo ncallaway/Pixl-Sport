@@ -38,6 +38,11 @@ namespace Pixl_Sport
         }
 
 
+        public override void Execute(GameManager M)
+        {
+            throw new NotImplementedException("What are you doing? Don't call the Game Manager!!");
+
+        }
 
     }
 }

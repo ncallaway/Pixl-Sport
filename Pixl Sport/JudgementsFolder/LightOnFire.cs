@@ -17,6 +17,9 @@ namespace Pixl_Sport
             {
 
                 case JudgementType.Team:
+                    id = "You can tell by the way we're sparking that we're burning alive!";
+                    break;
+                case JudgementType.Global:
                     id = "Let the world BURN!";
                     break;
                 case JudgementType.TeamMember:
@@ -25,12 +28,18 @@ namespace Pixl_Sport
                 default:
                     throw new NotImplementedException("I can't start fires if you don't tell me who to burn");
 
-                    break;
+                  
             }
         
         }
 
 
+        public override void Execute(GameManager M) 
+        {
+            //TM.IsONFIRE!!!!   
+        
+        }
+        
         public override void Execute(TeamMember TM) 
         {
             //TM.IsONFIRE!!!!   

@@ -10,7 +10,8 @@ namespace Pixl_Sport
         public enum JudgementType
         {
             Team,
-            TeamMember
+            TeamMember,
+            Global
 
         }
 
@@ -22,11 +23,23 @@ namespace Pixl_Sport
     
 
 
-        public void Execute(TeamMember TM);
+        public abstract void Execute(TeamMember TM);
   
-        public void Execute(Team T);
+        public abstract void Execute(Team T);
+
+        public abstract void Execute(GameManager M);
+
+        /*
+         * 
+
+        public override void Execute(TeamMember TM){ throw new NotImplementedException();}
+
+        public override void Execute(Team T){ throw new NotImplementedException();}
+
+        public override void Execute(GameManager M){ throw new NotImplementedException();}
 
 
+         */
 
 
     }

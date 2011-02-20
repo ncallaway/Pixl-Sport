@@ -21,7 +21,7 @@ namespace Pixl_Sport
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Field testField;
+        GameManager gm;
 
         public PixlGame()
         {
@@ -30,6 +30,8 @@ namespace Pixl_Sport
             graphics.PreferredBackBufferWidth = 1024;
             graphics.PreferredBackBufferHeight = 768;
             Content.RootDirectory = "Content";
+
+            gm = new GameManager();
         }
 
         /// <summary>
@@ -53,8 +55,7 @@ namespace Pixl_Sport
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            testField = new Field();
-            testField.Load(Content);
+            gm.Load(Content);
 
             // TODO: use this.Content to load your game content here
         }
@@ -79,9 +80,10 @@ namespace Pixl_Sport
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // TODO: Add your update logic here
+            gm.Update(gameTime);
 
             base.Update(gameTime);
+            
         }
 
         /// <summary>
@@ -93,7 +95,7 @@ namespace Pixl_Sport
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin();
-            testField.Draw(spriteBatch);
+            gm.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);
