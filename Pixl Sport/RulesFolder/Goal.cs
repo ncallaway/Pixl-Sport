@@ -22,7 +22,7 @@ namespace Pixl_Sport.RulesFolder
 
         public override void Enforce()
         {
-            Team Scoringteam = new Team() ;
+            Team Scoringteam = new Team("") ;
 
             Scoringteam.Score += 5; 
 

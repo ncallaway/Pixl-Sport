@@ -64,19 +64,48 @@ namespace Pixl_Sport
 
         private void drawTopLine(SpriteBatch batch, float baseX, float width, float baseY)
         {
+            bool scoreThree = false;
+            if (HomeScore > 100 || HomeScore < -100 || AwayScore > 100 || AwayScore < -100) {
+                scoreThree = true;
+            }
+
+            String homeScoreString = scoreThree ? string.Format("{0:d3}", HomeScore) : string.Format("{0:d2}", HomeScore);
+            String awayScoreString = scoreThree ? string.Format("{0:d3}", AwayScore) : string.Format("{0:d2}", AwayScore);
+
             /* Calc top line width! */
+            float xPos = 0; /* Will do centering below */
+            float yPos = baseY + 20 ;
+
             Vector2 measurement = sbMedium.MeasureString(HomeTeam);
-            float topLineWidth = measurement.X;
-            measurement = sbMedium.MeasureString(AwayTeam);
-            topLineWidth += measurement.X;
-            topLineWidth += 2 * NAME_SCORE_PADDING + SCORE_SCORE_PADDING;
-
-            float xPos = baseX + (width - topLineWidth) / 2f;
-            float yPos = baseY;
-
+            Vector2 homeTeamPos = new Vector2(xPos, yPos);
+            xPos = measurement.X;
             xPos += NAME_SCORE_PADDING;
 
-            batch.DrawString(sbMedium, HomeTeam, new Vector2(xPos, yPos), COLOR_SB_TEXT);
+            measurement = sbXtraLarge.MeasureString(homeScoreString);
+            Vector2 homeScorePos = new Vector2(xPos, baseY);
+
+            xPos += measurement.X;
+            xPos += SCORE_SCORE_PADDING;
+
+            measurement = sbXtraLarge.MeasureString(awayScoreString);
+            Vector2 awayScorePos = new Vector2(xPos, baseY);
+
+            xPos += measurement.X;
+            xPos += NAME_SCORE_PADDING;
+
+            measurement = sbMedium.MeasureString(AwayTeam);
+            Vector2 awayTeamPos = new Vector2(xPos, yPos);
+
+            xPos += measurement.X;
+
+            float topLineWidth = xPos;
+
+            Vector2 centerOffset = new Vector2(baseX + (width - topLineWidth) / 2f, 0f);
+
+            batch.DrawString(sbMedium, HomeTeam, homeTeamPos + centerOffset, COLOR_SB_TEXT);
+            batch.DrawString(sbXtraLarge, homeScoreString, homeScorePos + centerOffset, COLOR_SB_TEXT);
+            batch.DrawString(sbXtraLarge, awayScoreString, awayScorePos + centerOffset, COLOR_SB_TEXT);
+            batch.DrawString(sbMedium, AwayTeam, awayTeamPos + centerOffset, COLOR_SB_TEXT);
         }
     }
 }

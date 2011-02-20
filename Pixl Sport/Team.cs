@@ -20,6 +20,12 @@ namespace Pixl_Sport
 
         public int Score;
 
+        public Team(String name)
+        {
+            teamName = name;
+            Score = 0;
+        }
+
         public void Initialize()
         {
             Members.Clear();

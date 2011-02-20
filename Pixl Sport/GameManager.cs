@@ -63,8 +63,8 @@ namespace Pixl_Sport
 
             PlaySpace.Position = psp;
 
-            Team1 = new Team();
-            Team2 = new Team();
+            Team1 = new Team("Broadway Bisons");
+            Team2 = new Team("New Jersey Devils");
             Ball = new Ball();
 
             Team1.Initialize();
@@ -106,11 +106,16 @@ namespace Pixl_Sport
         public void Update(GameTime T)
         {
             if (running) Time = T.ElapsedGameTime.Milliseconds;
+
+            Scoreboard.HomeTeam = Team1.TeamName;
+            Scoreboard.AwayTeam = Team2.TeamName;
+            Scoreboard.HomeScore = Team1.Score;
+            Scoreboard.AwayScore = Team2.Score;
         }
 
         public void Draw(GameTime t, SpriteBatch b)
         {
-            Scoreboard.Draw(b, new Rectangle(0, 40, pixlGame.GraphicsDevice.Viewport.Width, 190));
+            Scoreboard.Draw(b, new Rectangle(0, 20, pixlGame.GraphicsDevice.Viewport.Width, 170));
             PlaySpace.Draw(b);
 
             foreach (TeamMember m in Team1.Members) {
