@@ -51,6 +51,7 @@ namespace Pixl_Sport
         {
             PlaySpace = new Field();
 
+
             Team1 = new Team();
             Team2 = new Team();
             Ball = new Ball();
@@ -79,7 +80,7 @@ namespace Pixl_Sport
         }
 
 
-        public void Load(ContentManager content)
+         public void Load(ContentManager content)
         {
             pixels = content.Load<Texture2D>("line");
             PlaySpace.Load(content);
@@ -105,6 +106,12 @@ namespace Pixl_Sport
         public void Draw(GameTime t, SpriteBatch b)
         {
             PlaySpace.Draw(b);
+
+
+            foreach (TeamMember m in Team1.Members) {
+                m.Draw(b, pixels, PlaySpace.FieldOrigin, PlaySpace.SizeMultiplier);
+            }
+
 
             foreach (TeamMember m in Team1.Members) {
                 m.Draw(b, pixels, PlaySpace.FieldOrigin, PlaySpace.SizeMultiplier);
