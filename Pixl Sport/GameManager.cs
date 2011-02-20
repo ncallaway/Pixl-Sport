@@ -41,20 +41,36 @@ namespace Pixl_Sport
         private Texture2D pixels;
 
 
-        public GameManager() { }
+        public GameManager() {
+            Initialize();
+        }
 
         public void Initialize()
         {
+            PlaySpace = new Field();
+
+            Team1 = new Team();
+            Team2 = new Team();
+
             Team1.Initialize();
             Team2.Initialize();
 
-            Team1.Color = Color.Blue;
+            Team1.Color = Color.Cyan;
             Team2.Color = Color.Red;
+
+            SetupKickoff();
+        }
+
+        public void SetupKickoff()
+        {
+            Team1.SetupKickoff(true);
+            Team2.SetupKickoff(false);
         }
 
         public void Load(ContentManager content)
         {
             pixels = content.Load<Texture2D>("line");
+            PlaySpace.Load(content);
         }
 
 
@@ -79,7 +95,11 @@ namespace Pixl_Sport
             PlaySpace.Draw(b);
 
             foreach (TeamMember m in Team1.Members) {
-                m.Draw(b, pixels);
+                m.Draw(b, pixels, PlaySpace.FieldOrigin, PlaySpace.SizeMultiplier);
+            }
+
+            foreach (TeamMember m in Team2.Members) {
+                m.Draw(b, pixels, PlaySpace.FieldOrigin, PlaySpace.SizeMultiplier);
             }
         }
 

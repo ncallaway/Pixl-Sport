@@ -32,16 +32,16 @@ namespace Pixl_Sport
         private Team team;
         public Team Team { get { return team; } }
 
-
-
         public TeamMember(Team team)
         {
             this.team = team;
         }
 
-        public void Draw(SpriteBatch batch, Texture2D pixels)
+        public void Draw(SpriteBatch batch, Texture2D pixels, Vector2 fieldOrigin, uint scaleSize)
         {
-            Rectangle destination = new Rectangle((int)position.X, (int)position.Y, 2, 2);
+            Vector2 drawLocation = (fieldOrigin + position) * scaleSize;
+            Rectangle destination = new Rectangle((int)drawLocation.X, (int)drawLocation.Y, 2 * (int)scaleSize, 2 * (int)scaleSize);
+
             batch.Draw(pixels, destination, team.Color);
         }
 
