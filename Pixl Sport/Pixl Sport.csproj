@@ -91,6 +91,7 @@
     <Compile Include="JudgementsFolder\Judgement.cs" />
     <Compile Include="JudgementsFolder\LightOnFire.cs" />
     <Compile Include="JudgementsFolder\KickOff.cs" />
+    <Compile Include="PlayerAI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="PixlGame.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="RulesFolder\Rule.cs" />
     <Compile Include="JudgementsFolder\ScoreChange.cs" />
     <Compile Include="Team.cs" />
+    <Compile Include="TeamAI.cs" />
     <Compile Include="TeamMember.cs" />
   </ItemGroup>
   <ItemGroup>

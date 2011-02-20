@@ -15,8 +15,7 @@ namespace Pixl_Sport
         public String Name { get { return name; } }
 
         private int number;
-        public int Number { get { return number; } set { number = Math.Abs(value % 100); } } 
-
+        public int Number { get { return number; } set { number = Math.Abs(value % 100); } }
 
         private String profession;
         public String Profession { get { return Profession; } }
@@ -36,6 +35,16 @@ namespace Pixl_Sport
         private Team team;
         public Team Team { get { return team; } }
 
+
+        public bool HasBall = false;
+        public bool PlayerControlled = false;
+        
+
+
+
+
+
+
         public TeamMember(Team team)
         {
             this.team = team;
@@ -48,6 +57,35 @@ namespace Pixl_Sport
 
             batch.Draw(pixels, destination, team.Color);
         }
+
+        public void Update(GameTime t)
+        {
+            if (PlayerControlled)
+            {
+
+            }
+            
+
+        }
+
+        public void Pass(TeamMember TM)
+        {
+
+            Pass(TM.position);
+
+
+        }
+
+
+        public void Pass(Vector2 target)
+        {
+            
+
+        }
+
+
+
+
 
 
     }

@@ -15,6 +15,13 @@ namespace Pixl_Sport
         private Vector2 position;
         public Vector2 Position { get { return position; } set { position = value; } }
 
+        private Vector2 direction;
+        public Vector2 Direction { get { return direction; } }
+
+        private float velocity;
+
+        private bool inAir;
+
         public void Draw(SpriteBatch batch, Texture2D pixels, Vector2 fieldOrigin, uint scaleSize)
         {
             Vector2 drawLocation = (fieldOrigin + position) * scaleSize;
@@ -22,5 +29,25 @@ namespace Pixl_Sport
 
             batch.Draw(pixels, destination, COLOR_BALL);
         }
+
+
+        public void Update ( GameTime t) 
+        {
+
+
+
+        }
+
+
+        public void SendFlying(Vector2 direction, int force)
+        {
+
+
+
+
+        }
+
+
+
     }
 }
