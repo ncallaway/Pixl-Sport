@@ -65,28 +65,34 @@ namespace Pixl_Sport
         private void neutralPlayModeUpdate(GameTime t)
         {
             /* Closest two members converge on ball! */
-            TeamMember closest = null;
-            TeamMember closest2 = null;
-            Ball ball = team.Manager.Ball;
+            List<TeamMember> getters = getClosestTeamMembersToPoint(team, 2, team.Manager.Ball.Position);
 
-            foreach (TeamMember m in team.Members) {
-                if (closest == null ||
-                    Vector2.DistanceSquared(m.Position, ball.Position) < Vector2.DistanceSquared(closest.Position, ball.Position)) {
-                    closest2 = closest;
-                    closest = m;
-                } else {
-                    if (closest2 == null ||
-                        Vector2.DistanceSquared(m.Position, ball.Position) < Vector2.DistanceSquared(closest2.Position, ball.Position)) {
-                        closest2 = m;
-                    }
-                }
+            foreach (TeamMember m in getters) {
+                m.AI.InstructionBall = team.Manager.Ball;
+                m.AI.Instruction = Instruction.AcquireBall;
             }
 
-            closest.AI.InstructionBall = ball;
-            closest.AI.Instruction = Instruction.AcquireBall;
+            foreach (TeamMember m in team.Members) {
+                if (getters.Contains(m) == false) {
+                    m.AI.InstructionBall = team.Manager.Ball;
+                    m.AI.Instruction = Instruction.GetOpen;
+                }
+            }
+        }
 
-            closest2.AI.InstructionBall = ball;
-            closest2.AI.Instruction = Instruction.AcquireBall;
+        private List<TeamMember> getClosestTeamMembersToPoint(Team team, int number, Vector2 point)
+        {
+            List<TeamMember> members = new List<TeamMember>(team.Members);
+
+            members.Sort(delegate (TeamMember a, TeamMember b) {
+                return Comparer<float>.Default.Compare(Vector2.DistanceSquared(a.Position, point), Vector2.DistanceSquared(b.Position, point));
+            });
+
+            while (members.Count > number) {
+                members.RemoveAt(number);
+            }
+
+            return members;
         }
 
         private void setPlayMode()
