@@ -31,9 +31,9 @@ namespace Pixl_Sport
 
         public void Update(GameTime t)
         {
-          //  if (!CurrentCharacter.HasBall) foreach (TeamMember TM in team.Members) if(TM.HasBall) CurrentCharacter = TM;
+           if (!CurrentCharacter.HasBall) foreach (TeamMember TM in team.Members) if(TM.HasBall) CurrentCharacter = TM;
             input.Update();
-            if (CurrentCharacter.HasBall && input.IsAButtonNewlyPressed()) CurrentCharacter.Pass(new Vector2(100, 0));
+            if (CurrentCharacter.HasBall && input.RStickPosition().Length() >= .5) CurrentCharacter.Pass(input.RStickPosition());
             CurrentCharacter.Position += input.LStickPosition();
 
         }

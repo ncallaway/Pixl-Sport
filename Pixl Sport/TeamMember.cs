@@ -51,6 +51,8 @@ namespace Pixl_Sport
         public TeamMember(Team team)
         {
             this.team = team;
+            passStrength = 10;
+            passAccuracy = 10;
         }
 
         public void Draw(SpriteBatch batch, Texture2D pixels, Vector2 fieldOrigin, uint scaleSize)
@@ -77,17 +79,19 @@ namespace Pixl_Sport
 
         public void Pass(Vector2 target)
         {   
-            Vector2 passVector = position- target;
-            float time = passVector.LengthSquared() / passStrength;
-            HeldBall.SendFlying(target, time);
+            HeldBall.SendFlying(target, passStrength/2, passStrength/2);
             HasBall = false;
+            HeldBall = null;
         }
 
         public void GrabBall(Ball ball)
         {
             HeldBall = ball;
             HasBall = true;
+            ball.Clear();
+
             ball.Possessor = this;
+            ball.State = Ball.BallState.Held;
         }
 
 
