@@ -16,6 +16,9 @@ namespace Pixl_Sport
         private Color teamColor;
         public Color Color { get { return teamColor; } set { teamColor = value; } }
 
+        private TeamAI ai;
+        public TeamAI AI { get { return ai;  } }
+
         public List<TeamMember> Members = new List<TeamMember>();
 
         public int Score;
@@ -24,6 +27,7 @@ namespace Pixl_Sport
         {
             teamName = name;
             Score = 0;
+            ai = new TeamAI(this);
         }
 
         public void Initialize()

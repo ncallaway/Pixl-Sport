@@ -44,6 +44,8 @@ namespace Pixl_Sport
         private int passStrength;
         private int passAccuracy;
 
+        private PlayerAI ai;
+
 
 
 
@@ -51,6 +53,7 @@ namespace Pixl_Sport
         public TeamMember(Team team)
         {
             this.team = team;
+            ai = new PlayerAI(this);
         }
 
         public void Draw(SpriteBatch batch, Texture2D pixels, Vector2 fieldOrigin, uint scaleSize)
@@ -63,8 +66,10 @@ namespace Pixl_Sport
 
         public void Update(GameTime t)
         {
-            
-            if(!PlayerControlled) PlayerControlled = false;   /// PlaceMarker for AI Calls!
+
+            if (!PlayerControlled) {
+                ai.Update(t);
+            }
 
             if (HasBall) HeldBall.Position = new Vector2(position.X, position.Y - 2);
          }

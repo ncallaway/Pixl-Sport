@@ -11,14 +11,14 @@ namespace Pixl_Sport
         {
             Offensive,
             Defensive,
-
-
-
-
-
-
         }
 
+        private Team team;
+
+        public TeamAI(Team team)
+        {
+            this.team = team;
+        }
 
 
     }
