@@ -79,7 +79,7 @@ namespace Pixl_Sport
 
         public void Pass(Vector2 target)
         {   
-            HeldBall.SendFlying(target, passStrength/2, passStrength/2);
+            HeldBall.SendFlying(target, passStrength/5, passStrength/3);
             HasBall = false;
             HeldBall = null;
         }
@@ -88,7 +88,7 @@ namespace Pixl_Sport
         {
             HeldBall = ball;
             HasBall = true;
-            ball.Clear();
+            
 
             ball.Possessor = this;
             ball.State = Ball.BallState.Held;
