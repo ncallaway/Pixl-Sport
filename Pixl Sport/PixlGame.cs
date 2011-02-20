@@ -21,9 +21,14 @@ namespace Pixl_Sport
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Field testField;
+
         public PixlGame()
         {
             graphics = new GraphicsDeviceManager(this);
+            // Change of resolution.
+            graphics.PreferredBackBufferWidth = 1024;
+            graphics.PreferredBackBufferHeight = 768;
             Content.RootDirectory = "Content";
         }
 
@@ -35,7 +40,6 @@ namespace Pixl_Sport
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
 
             base.Initialize();
         }
@@ -48,6 +52,9 @@ namespace Pixl_Sport
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            testField = new Field();
+            testField.Load(Content);
 
             // TODO: use this.Content to load your game content here
         }
@@ -83,9 +90,11 @@ namespace Pixl_Sport
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            testField.Draw(spriteBatch);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
