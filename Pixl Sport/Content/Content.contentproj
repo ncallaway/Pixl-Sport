@@ -45,8 +45,36 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MediumPixlFont.spritefont">
+    <Compile Include="Fonts\MediumPixlFont.spritefont">
       <Name>MediumPixlFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Fonts\SmallSBFont.spritefont">
+      <Name>SmallSBFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Fonts\MediumSBFont.spritefont">
+      <Name>MediumSBFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Fonts\LargeSBFont.spritefont">
+      <Name>LargeSBFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Fonts\XtraLargeSBFont.spritefont">
+      <Name>XtraLargeSBFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>

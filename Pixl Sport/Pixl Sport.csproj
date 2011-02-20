@@ -93,6 +93,7 @@
     <Compile Include="RulesFolder\Goal.cs" />
     <Compile Include="RulesFolder\OutOfBounds.cs" />
     <Compile Include="RulesFolder\Rule.cs" />
+    <Compile Include="Scoreboard.cs" />
     <Compile Include="Team.cs" />
     <Compile Include="TeamMember.cs" />
   </ItemGroup>

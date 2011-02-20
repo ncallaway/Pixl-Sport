@@ -45,7 +45,7 @@ namespace Pixl_Sport
 
         public void Load(ContentManager content) {
             pixels = content.Load<Texture2D>("line");
-            pixelFont = content.Load<SpriteFont>("MediumPixlFont");
+            pixelFont = content.Load<SpriteFont>("Fonts/MediumPixlFont");
             loaded = true;
         }
 
