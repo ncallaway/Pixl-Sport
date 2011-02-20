@@ -14,6 +14,10 @@ namespace Pixl_Sport
         private String name;
         public String Name { get { return name; } }
 
+        private int number;
+        public int Number { get { return number; } set { number = Math.Abs(value % 100); } } 
+
+
         private String profession;
         public String Profession { get { return Profession; } }
 
