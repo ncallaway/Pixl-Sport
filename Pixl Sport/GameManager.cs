@@ -66,8 +66,8 @@ namespace Pixl_Sport
 
             PlaySpace.Position = psp;
 
-            Team1 = new Team("Broadway Bisons");
-            Team2 = new Team("New Jersey Devils");
+            Team1 = new Team("Broadway Bisons", this);
+            Team2 = new Team("New Jersey Devils", this);
             Ball = new Ball();
 
             Team1.Initialize();

@@ -47,6 +47,7 @@ namespace Pixl_Sport
         private int passAccuracy;
 
         private PlayerAI ai;
+        public PlayerAI AI { get { return ai; } }
 
 
 

@@ -21,13 +21,18 @@ namespace Pixl_Sport
 
         public List<TeamMember> Members = new List<TeamMember>();
 
+        private GameManager manager;
+        public GameManager Manager { get { return manager; } set { manager = value; } }
+
         public int Score;
 
-        public Team(String name)
+        public Team(String name, GameManager manager)
         {
             teamName = name;
             Score = 0;
+            this.manager = manager;
             ai = new TeamAI(this);
+            
         }
 
         public void Initialize()
@@ -78,10 +83,11 @@ namespace Pixl_Sport
 
         public void Update(GameTime T)
         {
+            ai.Update(T);
+
             foreach (TeamMember TM in Members)
             {
                 TM.Update(T);
-
             }
         }
 

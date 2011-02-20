@@ -16,7 +16,18 @@ namespace Pixl_Sport
 
        
         private Team team;
-        public TeamMember CurrentCharacter;
+        private TeamMember currentCharacter;
+        public TeamMember CurrentCharacter { get { return currentCharacter; }
+            set {
+                if (currentCharacter != null) {
+                    currentCharacter.PlayerControlled = false;
+                }
+                currentCharacter = value;
+                if (currentCharacter != null) {
+                    currentCharacter.PlayerControlled = true;
+                }
+            } 
+        }
 
         
 
