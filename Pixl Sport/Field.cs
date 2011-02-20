@@ -39,7 +39,7 @@ namespace Pixl_Sport
         {
             loaded = false;
             sizeMultiplier = 1;
-            position = new Vector2(100, 100);
+            position = new Vector2(100, 250);
             size = new Vector2(700, 432);
         }
 

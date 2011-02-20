@@ -41,14 +41,24 @@ namespace Pixl_Sport
 
         private Texture2D pixels;
 
+        private PixlGame pixlGame;
 
-        public GameManager() {
+
+        public GameManager(PixlGame game) {
+            pixlGame = game;
             Initialize();
         }
 
         public void Initialize()
         {
             PlaySpace = new Field();
+            Vector2 windowSize = new Vector2(pixlGame.GraphicsDevice.Viewport.Width,
+                                                 pixlGame.GraphicsDevice.Viewport.Height);
+            Vector2 psp;
+            psp.X = (windowSize.X - PlaySpace.RenderSize.X) / 2f;
+            psp.Y = windowSize.Y - PlaySpace.RenderSize.Y - 50f;
+
+            PlaySpace.Position = psp;
 
             Team1 = new Team();
             Team2 = new Team();
