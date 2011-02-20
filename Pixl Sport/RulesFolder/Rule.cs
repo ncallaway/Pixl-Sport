@@ -5,7 +5,21 @@ using System.Text;
 
 namespace Pixl_Sport
 {
-    class Rule
+     abstract class Rule
     {
+         protected String ruleName;
+         public String RuleName { get { return ruleName; } }
+         protected GameManager manager;
+
+         public Rule() { }
+
+
+         public abstract bool Check();
+
+
+
+         public abstract void Enforce();
+     
+
     }
 }
