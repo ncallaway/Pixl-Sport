@@ -29,7 +29,7 @@ namespace Pixl_Sport
         private static int QUARTERTIME = 600000;
         private int time;
         public int Time { get { return time; } set { time = Math.Max(time - value, 0); } }
-        public int MinTime { get { return time / 6000; } }
+        public int MinTime { get { return time / 60000; } }
         public int SecTime { get { return (time / 1000) % 60; } }
         private bool running;
 
@@ -73,6 +73,8 @@ namespace Pixl_Sport
             Team1.Color = Color.Cyan;
             Team2.Color = new Color(167, 167, 167);
 
+            time = QUARTERTIME;
+
             SetupKickoff();
         }
 
@@ -81,6 +83,8 @@ namespace Pixl_Sport
             Team1.SetupKickoff(true);
             Team2.SetupKickoff(false);
             Ball.Position = new Vector2(352f, 432f / 2f);
+
+            running = true;
         }
 
         public void Load(ContentManager content)
@@ -107,10 +111,13 @@ namespace Pixl_Sport
         {
             if (running) Time = T.ElapsedGameTime.Milliseconds;
 
+            TimeSpan remaining = new TimeSpan(0, MinTime, SecTime);
+
             Scoreboard.HomeTeam = Team1.TeamName;
             Scoreboard.AwayTeam = Team2.TeamName;
             Scoreboard.HomeScore = Team1.Score;
             Scoreboard.AwayScore = Team2.Score;
+            Scoreboard.TimeRemaining = remaining;
         }
 
         public void Draw(GameTime t, SpriteBatch b)
