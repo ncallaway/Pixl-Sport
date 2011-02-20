@@ -32,6 +32,7 @@ namespace Pixl_Sport
         public int MinTime { get { return time / 6000; } }
         public int SecTime { get { return (time / 1000) % 60; } }
         private bool running;
+        public void StopClock() { running = false;}
 
         public Team Team1;
         public Team Team2;
@@ -48,7 +49,7 @@ namespace Pixl_Sport
 
 
 
-        public GameManager() { }
+        public GameManager() {}
 
 
         //This itterates throught the current Rules and checks them. If they are broken it enforces them.
@@ -57,7 +58,7 @@ namespace Pixl_Sport
 
             foreach (Rule R in rulesList)
             {
-                if (R.Check()) R.Enforce();
+                R.Check();
 
             }
         }

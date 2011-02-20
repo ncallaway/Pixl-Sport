@@ -11,14 +11,18 @@ namespace Pixl_Sport
          public String RuleName { get { return ruleName; } }
          protected GameManager manager;
 
+         protected Judgement assignedJudgement;
+
+
          public Rule() { }
 
 
-         public abstract bool Check();
+         public abstract void Check();
 
 
 
-         public abstract void Enforce();
+         public abstract void Enforce(Team T, TeamMember TM);
+         
      
 
     }
