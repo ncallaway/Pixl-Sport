@@ -12,6 +12,8 @@ namespace Pixl_Sport
     class Scoreboard
     {
         private static readonly Color COLOR_SB_TEXT = new Color (207, 195, 11);
+        private const int NAME_SCORE_PADDING = 30;
+        private const int SCORE_SCORE_PADDING = 100;
 
         public String HomeTeam;
         public String AwayTeam;
@@ -56,6 +58,25 @@ namespace Pixl_Sport
 
             /* Center vertically within region */
             float baseY = (region.Height - 150f) / 2f + region.Top;
+
+            drawTopLine(batch, baseX, width, baseY);
+        }
+
+        private void drawTopLine(SpriteBatch batch, float baseX, float width, float baseY)
+        {
+            /* Calc top line width! */
+            Vector2 measurement = sbMedium.MeasureString(HomeTeam);
+            float topLineWidth = measurement.X;
+            measurement = sbMedium.MeasureString(AwayTeam);
+            topLineWidth += measurement.X;
+            topLineWidth += 2 * NAME_SCORE_PADDING + SCORE_SCORE_PADDING;
+
+            float xPos = baseX + (width - topLineWidth) / 2f;
+            float yPos = baseY;
+
+            xPos += NAME_SCORE_PADDING;
+
+            batch.DrawString(sbMedium, HomeTeam, new Vector2(xPos, yPos), COLOR_SB_TEXT);
         }
     }
 }
