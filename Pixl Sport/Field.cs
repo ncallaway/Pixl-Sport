@@ -16,6 +16,7 @@ namespace Pixl_Sport
         private static readonly Color COLOR_LINES = Color.Black;
         private static readonly Color COLOR_ENDZONE = new Color(167, 167, 167);
         private static readonly Color COLOR_ENDZONE_TEXT = Color.Black;
+        private static readonly Color COLOR_POSTS = Color.White;
 
         private const String ENDZONE_TEXT_1 = "BROADWAY";
         private const String ENDZONE_TEXT_2 = "BISONS";
@@ -56,6 +57,7 @@ namespace Pixl_Sport
             drawBackground(batch);
             drawLines(batch);
             drawEndzone(batch);
+            drawGoalposts(batch);
         }
 
         private void drawBackground(SpriteBatch batch)
@@ -165,6 +167,46 @@ namespace Pixl_Sport
             position = new Vector2(origin.X + 2 * endZoneWidth + fullField + centered.X - thickThickness + thinThickness, (int)origin.Y + thickThickness + centered.Y);
 
             batch.DrawString(pixelFont, ENDZONE_TEXT_2, position, COLOR_ENDZONE_TEXT, (float)Math.PI / 2f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+        }
+
+        private void drawGoalposts(SpriteBatch batch)
+        {
+            Vector2 padding = sizeMultiplier * PADDING_SIZE;
+            int thickThickness = (int)sizeMultiplier * 4;
+
+            Vector2 origin = Position + padding;
+
+            int fieldHeight = 432 * (int)sizeMultiplier;
+            int endZoneWidth = 50 * (int)sizeMultiplier;
+            int fieldWidth = 700 * (int)sizeMultiplier;
+
+            /* Vertical lines */
+            Vector2 thickLineWidthOffset = new Vector2(thickThickness, 0);
+            Vector2 thickLineHeightOffset = new Vector2(0, thickThickness);
+            Vector2 fieldHeightOffset = new Vector2(0, fieldHeight);
+            Vector2 goalHeightOffset = new Vector2(0, 80);
+            Vector2 endzoneWidthOffset = new Vector2(endZoneWidth, 0);
+            Vector2 fieldWidthOffset = new Vector2(fieldWidth, 0);
+            Vector2 openSpaceSixthWidthOffset = (fieldWidthOffset - 2 * endzoneWidthOffset) / 6f;
+
+            Vector2 topLeft = origin;
+            Vector2 bottomLeft = topLeft + fieldHeightOffset;
+            Vector2 centreLeft = topLeft + fieldHeightOffset / 2f;
+            Vector2 topRight = topLeft + fieldWidthOffset;
+            Vector2 bottomRight = bottomLeft + fieldWidthOffset;
+            Vector2 centreRight = topRight + fieldHeightOffset / 2f;
+
+            Rectangle destination = new Rectangle((int)centreLeft.X - 4, (int)(centreLeft - goalHeightOffset / 2f).Y, 4, 4);
+            batch.Draw(pixels, destination, COLOR_POSTS);
+
+            destination = new Rectangle((int)centreLeft.X - 4, (int)(centreLeft + goalHeightOffset / 2f).Y - 4, 4, 4);
+            batch.Draw(pixels, destination, COLOR_POSTS);
+
+            destination = new Rectangle((int)centreRight.X + 4, (int)(centreRight - goalHeightOffset / 2f).Y, 4, 4);
+            batch.Draw(pixels, destination, COLOR_POSTS);
+
+            destination = new Rectangle((int)centreRight.X + 4, (int)(centreRight + goalHeightOffset / 2f).Y - 4, 4, 4);
+            batch.Draw(pixels, destination, COLOR_POSTS);
         }
 
 
