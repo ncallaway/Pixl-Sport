@@ -9,10 +9,25 @@ namespace Pixl_Sport
 {
     class TeamAI
     {
+        public enum Instruction
+        {
+            /* NEUTRAL ACTIONS! */
+            AcquireBall, /* NO DATA */
+            CheckPlayer, /* TeamMember */
+
+            /* DEFENSIVE ACTIONS! */
+            DefendArea, /* Position, Radius */
+            DefendPlayer, /* TeamMember */
+
+            /* OFFENSIVE ACTIONS! */
+            GetOpen /* Position, Radius */
+        }
+
         public enum PlayMode
         {
             Offensive,
             Defensive,
+            Neutral,
         }
 
         private Team team;
@@ -26,7 +41,7 @@ namespace Pixl_Sport
         {
             foreach (TeamMember m in team.Members) {
                 m.AI.InstructionBall = team.Manager.Ball;
-                m.AI.Goal = PlayerAI.Instruction.AcquireBall;
+                m.AI.Instruction = Instruction.AcquireBall;
             }
         }
     }

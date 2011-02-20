@@ -9,20 +9,6 @@ namespace Pixl_Sport
 {
     class PlayerAI
     {
-        public enum Instruction
-        {
-            /* NEUTRAL ACTIONS! */
-            AcquireBall, /* NO DATA */
-            CheckPlayer, /* TeamMember */
-
-            /* DEFENSIVE ACTIONS! */
-            DefendArea, /* Position, Radius */
-            DefendPlayer, /* TeamMember */
-
-            /* OFFENSIVE ACTIONS! */
-            GetOpen /* Position, Radius */
-        }
-
         public enum Action
         {
             NoAction,
@@ -38,7 +24,7 @@ namespace Pixl_Sport
             Wait,
         }
 
-        public Instruction Goal { get { return instruction; }
+        public TeamAI.Instruction Instruction { get { return instruction; }
             set
             {
                 if (instruction != value) {
@@ -51,13 +37,13 @@ namespace Pixl_Sport
         public PlayerAI(TeamMember player)
         {
             this.player = player;
-            instruction = Instruction.GetOpen;
+            instruction = TeamAI.Instruction.GetOpen;
             action = Action.NoAction;
 
             parentAi = player.Team.AI;
         }
 
-        private Instruction instruction;
+        private TeamAI.Instruction instruction;
         private Ball instructionBall;
         private Vector2 instructionPosition;
         private float instructionRadius;
@@ -99,10 +85,10 @@ namespace Pixl_Sport
         private void setActionForInstruction()
         {
             switch (instruction) {
-                case Instruction.AcquireBall:
+                case TeamAI.Instruction.AcquireBall:
                     selectActionForAcquireBall();
                     break;
-                case Instruction.GetOpen:
+                case TeamAI.Instruction.GetOpen:
                     action = Action.Wait;
                     break;
             }
