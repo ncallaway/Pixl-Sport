@@ -20,7 +20,7 @@ namespace Pixl_Sport
         public bool OnField;
 
         private Vector2 position;
-        public Vector2 Position { get { return position; } }
+        public Vector2 Position { get { return position; } set { position = value; } }
 
         private BoundingBox Bounds {
             get {

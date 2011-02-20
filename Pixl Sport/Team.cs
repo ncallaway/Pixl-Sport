@@ -43,7 +43,7 @@ namespace Pixl_Sport
                 max += rightOffset;
             }
 
-            Random rand;
+            Random rand = new Random();
 
             int offFieldOffset = 0;
 

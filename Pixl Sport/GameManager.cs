@@ -35,7 +35,10 @@ namespace Pixl_Sport
 
         public Team Team1;
         public Team Team2;
+        public Field PlaySpace;
         public List<Team> BothTeams = new List<Team>();
+
+        private Texture2D pixels;
 
 
         public GameManager() { }
@@ -44,6 +47,14 @@ namespace Pixl_Sport
         {
             Team1.Initialize();
             Team2.Initialize();
+
+            Team1.Color = Color.Blue;
+            Team2.Color = Color.Red;
+        }
+
+        public void Load(ContentManager content)
+        {
+            pixels = content.Load<Texture2D>("line");
         }
 
 
@@ -65,6 +76,11 @@ namespace Pixl_Sport
 
         public void Draw(GameTime t, SpriteBatch b)
         {
+            PlaySpace.Draw(b);
+
+            foreach (TeamMember m in Team1.Members) {
+                m.Draw(b, pixels);
+            }
         }
 
 
