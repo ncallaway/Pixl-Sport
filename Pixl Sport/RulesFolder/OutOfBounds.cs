@@ -23,7 +23,7 @@ namespace Pixl_Sport
 
         public override void Check()
         {
-         
+            if (manager.Ball.Position.Y < 300) Enforce(manager.Ball.Possessor.Team, manager.Ball.Possessor);
 
 
 

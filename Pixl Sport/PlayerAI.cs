@@ -96,6 +96,11 @@ namespace Pixl_Sport
 
         private void selectActionForAcquireBall()
         {
+            if (player.HasBall && player.HeldBall == instructionBall) {
+                /* GOT IT! */
+                action = Action.Wait;
+            }
+
             action = Action.MoveToBall;
             actionBall = instructionBall;
         }
@@ -116,6 +121,12 @@ namespace Pixl_Sport
 
         private void performMoveToBall()
         {
+            if (player.HasBall && player.HeldBall == actionBall) {
+                /* ACTION ACCOMPLISHED! */
+                action = Action.Wait;
+                return;
+            }
+
             /* Get Vector between us and ball! */
             Vector2 direction = actionBall.Position - player.Position;
             direction.Normalize();
