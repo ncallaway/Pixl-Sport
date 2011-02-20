@@ -35,6 +35,7 @@ namespace Pixl_Sport
 
         public Team Team1;
         public Team Team2;
+        public Ball Ball;
         public Field PlaySpace;
         public List<Team> BothTeams = new List<Team>();
 
@@ -51,12 +52,13 @@ namespace Pixl_Sport
 
             Team1 = new Team();
             Team2 = new Team();
+            Ball = new Ball();
 
             Team1.Initialize();
             Team2.Initialize();
 
             Team1.Color = Color.Cyan;
-            Team2.Color = Color.Red;
+            Team2.Color = new Color(167, 167, 167);
 
             SetupKickoff();
         }
@@ -65,6 +67,7 @@ namespace Pixl_Sport
         {
             Team1.SetupKickoff(true);
             Team2.SetupKickoff(false);
+            Ball.Position = new Vector2(352f, 432f / 2f);
         }
 
         public void Load(ContentManager content)
@@ -101,6 +104,8 @@ namespace Pixl_Sport
             foreach (TeamMember m in Team2.Members) {
                 m.Draw(b, pixels, PlaySpace.FieldOrigin, PlaySpace.SizeMultiplier);
             }
+
+            Ball.Draw(b, pixels, PlaySpace.FieldOrigin, PlaySpace.SizeMultiplier);
         }
 
 
