@@ -5,6 +5,7 @@ using System.Text;
 
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Pixl_Sport
 {
@@ -21,6 +22,12 @@ namespace Pixl_Sport
         private Vector2 position;
         public Vector2 Position { get { return position; } }
 
+        private BoundingBox Bounds {
+            get {
+                return new BoundingBox(new Vector3(position, 0f), new Vector3(position + Vector2.One, 0f));
+            } 
+        }
+
 
         private Team team;
         public Team Team { get { return team; } }
@@ -30,7 +37,12 @@ namespace Pixl_Sport
         public TeamMember(Team team)
         {
             this.team = team;
+        }
 
+        public void Draw(SpriteBatch batch, Texture2D pixels)
+        {
+            Rectangle destination = new Rectangle((int)position.X, (int)position.Y, 2, 2);
+            batch.Draw(pixels, destination, team.Color);
         }
 
 
