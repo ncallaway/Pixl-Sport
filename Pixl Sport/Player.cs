@@ -34,7 +34,7 @@ namespace Pixl_Sport
           //  if (!CurrentCharacter.HasBall) foreach (TeamMember TM in team.Members) if(TM.HasBall) CurrentCharacter = TM;
             input.Update();
             if (CurrentCharacter.HasBall && input.IsAButtonNewlyPressed()) CurrentCharacter.Pass(new Vector2(100, 0));
-            CurrentCharacter.Position += input.LStickPosition();
+            CurrentCharacter.Position += input.LStickPosition() * TeamMember.PLAYER_SPEED;
 
         }
 

@@ -69,6 +69,7 @@ namespace Pixl_Sport
         public TeamMember InstructionTeamMember { get { return instructionTeamMember; } set { instructionTeamMember = value; } }
 
         private Action action;
+        private Ball actionBall;
         private Vector2 actionPosition;
         private float actionRadius;
         private TeamMember actionTeamMember;
@@ -80,7 +81,7 @@ namespace Pixl_Sport
         public void Update(GameTime t)
         {
             if (evaluateCurrentAction()) {
-                action = selectActionForInstruction();
+                setActionForInstruction();
             }
 
             performAction(t);
@@ -95,20 +96,47 @@ namespace Pixl_Sport
             return false;
         }
 
-        private Action selectActionForInstruction()
+        private void setActionForInstruction()
         {
-            return Action.Wait;
+            switch (instruction) {
+                case Instruction.AcquireBall:
+                    selectActionForAcquireBall();
+                    break;
+                case Instruction.GetOpen:
+                    action = Action.Wait;
+                    break;
+            }
+        }
+
+        private void selectActionForAcquireBall()
+        {
+            action = Action.MoveToBall;
+            actionBall = instructionBall;
         }
 
         private void performAction(GameTime t)
         {
             switch (action) {
+                case Action.MoveToBall:
+                    performMoveToBall();
+                    break;
                 case Action.NoAction:
                 case Action.Wait:
                 default:
                     performWait();
                     break;
             }
+        }
+
+        private void performMoveToBall()
+        {
+            /* Get Vector between us and ball! */
+            Vector2 direction = actionBall.Position - player.Position;
+            direction.Normalize();
+
+            direction *= TeamMember.PLAYER_SPEED;
+
+            player.Position += direction;
         }
 
         private void performWait()

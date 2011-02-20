@@ -11,6 +11,8 @@ namespace Pixl_Sport
 {
     class TeamMember
     {
+        public const float PLAYER_SPEED = 1f;
+
         private String name;
         public String Name { get { return name; } }
 
