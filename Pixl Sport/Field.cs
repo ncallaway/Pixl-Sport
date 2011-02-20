@@ -128,9 +128,17 @@ namespace Pixl_Sport
             Vector2 endZoneSize = new Vector2(endZoneWidth + 2 * thickThickness, fieldHeight - 2 * thickThickness);
             Vector2 centered = (endZoneSize - rotatedTextSize) / 2f;
 
-            Vector2 position = new Vector2(origin.X + thickThickness + centered.X, (int)origin.Y + fieldHeight - thickThickness - centered.Y);
+            Vector2 position = new Vector2(origin.X + thickThickness + centered.X - thinThickness, (int)origin.Y + fieldHeight - thickThickness - centered.Y);
 
             batch.DrawString(pixelFont, ENDZONE_TEXT_1, position, COLOR_ENDZONE_TEXT, -(float)Math.PI / 2f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+
+            originalTextSize = pixelFont.MeasureString(ENDZONE_TEXT_2);
+            rotatedTextSize = new Vector2(originalTextSize.Y, originalTextSize.X);
+            centered = (endZoneSize - rotatedTextSize) / 2f;
+
+            position = new Vector2(origin.X + 2 * endZoneWidth + fullField + centered.X - thickThickness + thinThickness, (int)origin.Y + thickThickness + centered.Y);
+
+            batch.DrawString(pixelFont, ENDZONE_TEXT_2, position, COLOR_ENDZONE_TEXT, (float)Math.PI / 2f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
         }
     }
 }
