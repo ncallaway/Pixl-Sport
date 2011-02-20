@@ -9,7 +9,7 @@ namespace Pixl_Sport
         /// </summary>
         static void Main(string[] args)
         {
-            using (Game1 game = new Game1()) {
+            using (PixlGame game = new PixlGame()) {
                 game.Run();
             }
         }
