@@ -37,6 +37,7 @@ namespace Pixl_Sport
         public Team Team2;
         public Ball Ball;
         public Field PlaySpace;
+        public Scoreboard Scoreboard;
         public List<Team> BothTeams = new List<Team>();
 
         private Texture2D pixels;
@@ -52,6 +53,8 @@ namespace Pixl_Sport
         public void Initialize()
         {
             PlaySpace = new Field();
+            Scoreboard = new Scoreboard();
+
             Vector2 windowSize = new Vector2(pixlGame.GraphicsDevice.Viewport.Width,
                                                  pixlGame.GraphicsDevice.Viewport.Height);
             Vector2 psp;
@@ -83,7 +86,9 @@ namespace Pixl_Sport
         public void Load(ContentManager content)
         {
             pixels = content.Load<Texture2D>("line");
+            
             PlaySpace.Load(content);
+            Scoreboard.Load(content);
         }
 
 
@@ -105,6 +110,7 @@ namespace Pixl_Sport
 
         public void Draw(GameTime t, SpriteBatch b)
         {
+            Scoreboard.Draw(b, new Rectangle(0, 40, pixlGame.GraphicsDevice.Viewport.Width, 190));
             PlaySpace.Draw(b);
 
             foreach (TeamMember m in Team1.Members) {
