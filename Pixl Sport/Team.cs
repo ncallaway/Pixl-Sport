@@ -12,7 +12,7 @@ namespace Pixl_Sport
 
         public List<TeamMember> Members = new List<TeamMember>();
 
-
+        public int Score;
 
 
 
