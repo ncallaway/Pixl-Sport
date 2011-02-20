@@ -17,7 +17,11 @@ namespace Pixl_Sport
         private static readonly Color COLOR_ENDZONE = new Color(167, 167, 167);
         private static readonly Color COLOR_ENDZONE_TEXT = Color.Black;
 
+        private const String ENDZONE_TEXT_1 = "BROADWAY";
+        private const String ENDZONE_TEXT_2 = "BISONS";
+
         private Texture2D pixels;
+        private SpriteFont pixelFont;
         private bool loaded;
 
         public Vector2 Position { get { return position; } set { position = value; } }
@@ -39,6 +43,7 @@ namespace Pixl_Sport
 
         public void Load(ContentManager content) {
             pixels = content.Load<Texture2D>("line");
+            pixelFont = content.Load<SpriteFont>("MediumPixlFont");
             loaded = true;
         }
 
@@ -116,6 +121,16 @@ namespace Pixl_Sport
             endZone = new Rectangle((int)origin.X + endZoneWidth + fullField + (2 * thickThickness), (int)origin.Y + thickThickness, endZoneWidth - (2 * thickThickness), fieldHeight - (2 * thickThickness));
 
             batch.Draw(pixels, endZone, COLOR_ENDZONE);
+
+            /* end zone text */
+            Vector2 originalTextSize = pixelFont.MeasureString(ENDZONE_TEXT_1);
+            Vector2 rotatedTextSize = new Vector2(originalTextSize.Y, originalTextSize.X);
+            Vector2 endZoneSize = new Vector2(endZoneWidth + 2 * thickThickness, fieldHeight - 2 * thickThickness);
+            Vector2 centered = (endZoneSize - rotatedTextSize) / 2f;
+
+            Vector2 position = new Vector2(origin.X + thickThickness + centered.X, (int)origin.Y + fieldHeight - thickThickness - centered.Y);
+
+            batch.DrawString(pixelFont, ENDZONE_TEXT_1, position, COLOR_ENDZONE_TEXT, -(float)Math.PI / 2f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
         }
     }
 }
