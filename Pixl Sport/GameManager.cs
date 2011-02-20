@@ -32,6 +32,7 @@ namespace Pixl_Sport
         public int MinTime { get { return time / 60000; } }
         public int SecTime { get { return (time / 1000) % 60; } }
         private bool running;
+        public void StopClock() { running = false;}
 
         public Team Team1;
         public Team Team2;
@@ -55,6 +56,7 @@ namespace Pixl_Sport
             PlaySpace = new Field();
             Scoreboard = new Scoreboard();
 
+
             Vector2 windowSize = new Vector2(pixlGame.GraphicsDevice.Viewport.Width,
                                                  pixlGame.GraphicsDevice.Viewport.Height);
             Vector2 psp;
@@ -76,6 +78,13 @@ namespace Pixl_Sport
             time = QUARTERTIME;
 
             SetupKickoff();
+
+            rulesList.Add(new OutOfBounds(this, new ScoreChange(-4)));
+
+            rulesList.Add(new Goal(this, new KickOff()));
+
+            rulesList.Add(new OutOfBounds( this, new LightOnFire(Judgement.JudgementType.Team)));
+
         }
 
         public void SetupKickoff()
@@ -87,7 +96,7 @@ namespace Pixl_Sport
             running = true;
         }
 
-        public void Load(ContentManager content)
+         public void Load(ContentManager content)
         {
             pixels = content.Load<Texture2D>("line");
             
@@ -102,7 +111,7 @@ namespace Pixl_Sport
 
             foreach (Rule R in rulesList)
             {
-                if (R.Check()) R.Enforce();
+                R.Check();
 
             }
         }

@@ -3,31 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Pixl_Sport.RulesFolder
+namespace Pixl_Sport
 {
     class Goal:Rule
     {
-        public Goal()
+        public Goal(GameManager M, Judgement judge)
         {
+            manager = M;
             ruleName = "GOOOOAAALLL!!!";
-
+            assignedJudgement = judge;
         }
 
-        public override bool Check()
+        public override void Check()
         {
-            if ( /* ball is in the endzone*/ false) return true;
-
-            return false;
-        }
-
-        public override void Enforce()
-        {
-            Team Scoringteam = new Team("") ;
-
-            Scoringteam.Score += 5; 
-
+          //  if ( /* ball is in the endzone*/ false) Enforce ;
 
         }
+        
 
     }
 }

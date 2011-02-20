@@ -14,13 +14,20 @@ namespace Pixl_Sport
 
         }
 
-        public override bool Check()
+        public OutOfBounds(GameManager Manager, Judgement punishment)
         {
-            bool violated = false;
+            ruleName = "Out of Bounds";
+            manager = Manager;
+            assignedJudgement = punishment;
+        }
+
+        public override void Check()
+        {
+         
 
 
 
-            //These will be replaced witht he actual numbers
+            //These will be replaced with the field dimensions provided for later.
 
 
             int fieldMinX = 0 ;
@@ -34,17 +41,31 @@ namespace Pixl_Sport
 
             foreach (Team T in manager.BothTeams)
             {
-                foreach (TeamMember TM in T.Members) if (TM.Position.X < fieldMinX || TM.Position.X > fieldMaxX || TM.Position.Y < fieldMinY || TM.Position.Y > fieldMaxY) violated = true;
+                foreach (TeamMember TM in T.Members) if (TM.Position.X < fieldMinX || TM.Position.X > fieldMaxX || TM.Position.Y < fieldMinY || TM.Position.Y > fieldMaxY)
+                    {
+                        Enforce(T, TM);
+
+                    }
                 
             }
 
 
 
-            return violated;
         }
 
-        public override void Enforce()
+        public override void Enforce(Team T, TeamMember TM)
         {
+            manager.StopClock();
+            
+             switch(assignedJudgement.Judged){
+                 case Judgement.JudgementType.Team:
+                     assignedJudgement.Execute(T);
+                         break;
+                 case Judgement.JudgementType.TeamMember:
+                         assignedJudgement.Execute(TM);
+                         break;
+
+                     }
 
             ///RAWR~!!!!!!
 

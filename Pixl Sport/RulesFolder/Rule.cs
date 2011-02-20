@@ -11,14 +11,39 @@ namespace Pixl_Sport
          public String RuleName { get { return ruleName; } }
          protected GameManager manager;
 
+         protected Judgement assignedJudgement;
+
+
          public Rule() { }
 
 
-         public abstract bool Check();
+         public abstract void Check();
 
 
 
-         public abstract void Enforce();
+         public virtual void Enforce(Team T, TeamMember TM)
+         {
+
+             manager.StopClock();
+
+             switch (assignedJudgement.Judged)
+             {
+                 case Judgement.JudgementType.Team:
+                     assignedJudgement.Execute(T);
+                     break;
+                 case Judgement.JudgementType.TeamMember:
+                     assignedJudgement.Execute(TM);
+                     break;
+                 case Judgement.JudgementType.Global:
+                     assignedJudgement.Execute(manager);
+                     break;
+                 
+             }
+
+
+
+         }
+         
      
 
     }
