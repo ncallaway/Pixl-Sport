@@ -7,6 +7,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using Pixl_Sport.AI;
+
 namespace Pixl_Sport
 {
     class TeamMember
@@ -19,8 +21,8 @@ namespace Pixl_Sport
         private int number;
         public int Number { get { return number; } set { number = Math.Abs(value % 100); } }
 
-        private String profession;
-        public String Profession { get { return Profession; } }
+        private Team.Position profession;
+        public Team.Position Profession { get { return profession; } set { profession = value; } }
 
         public bool OnField;
         public bool IsOnFire;
@@ -68,6 +70,7 @@ namespace Pixl_Sport
             passAccuracy = 10;
             TimeWithBall = 0f;
             numPositionAvgFrames = 0;
+            profession = Team.Position.Decimator;
         }
 
         public void Draw(SpriteBatch batch, Texture2D pixels, Vector2 fieldOrigin, uint scaleSize)
@@ -84,7 +87,8 @@ namespace Pixl_Sport
         {
            
             if (!PlayerControlled) {
-               ai.Update(t);
+           //     ai.Update(t);
+                ai.Update(t);
             }
 
             trackMovingAverage();
