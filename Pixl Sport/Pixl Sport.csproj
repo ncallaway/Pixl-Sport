@@ -84,7 +84,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AI\DefensivePost.cs" />
+    <Compile Include="AI\Post.cs" />
     <Compile Include="Ball.cs" />
     <Compile Include="RulesFolder\HotPotato.cs" />
     <Compile Include="JudgementsFolder\Explosion.cs" />

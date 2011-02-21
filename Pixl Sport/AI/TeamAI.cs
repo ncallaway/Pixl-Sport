@@ -11,6 +11,7 @@ namespace Pixl_Sport.AI
     {
         public enum Instruction
         {
+            None, 
             /* NEUTRAL ACTIONS! */
             AcquireBall, /* NO DATA */
             CheckPlayer, /* TeamMember */
@@ -23,6 +24,7 @@ namespace Pixl_Sport.AI
 
             /* OFFENSIVE ACTIONS! */
             GetOpen, /* Position, Radius */
+            GetOpenNoInfo, /* NO DATA */
         }
 
         public enum PlayMode
@@ -32,10 +34,28 @@ namespace Pixl_Sport.AI
             Neutral,
         }
 
+        private static readonly List<Vector2> HOME_OFF_POSITIONS = new List<Vector2>() { 
+            new Vector2(425, 108),
+            new Vector2(425, 324),
+            new Vector2(500, 216),
+            new Vector2(300, 175),
+            new Vector2(300, 257)
+        };
+
+        private static readonly List<Vector2> AWAY_OFF_POSITIONS = new List<Vector2>() { 
+            new Vector2(275, 108),
+            new Vector2(275, 324),
+            new Vector2(200, 216),
+            new Vector2(400, 175),
+            new Vector2(400, 257)
+        };
+
         private static readonly List<Vector2> HOME_DEF_POSITIONS = new List<Vector2>() { 
-            new Vector2(30, 30),
-            new Vector2(30, 300),
-            new Vector2(50, 300)
+            new Vector2(275, 108),
+            new Vector2(275, 324),
+            new Vector2(200, 216),
+            new Vector2(400, 175),
+            new Vector2(400, 257)
         };
 
         private static readonly List<Vector2> AWAY_DEF_POSITIONS = new List<Vector2>() { 
@@ -43,10 +63,10 @@ namespace Pixl_Sport.AI
             new Vector2(425, 324),
             new Vector2(500, 216),
             new Vector2(300, 175),
-            new Vector2(300, 257),
+            new Vector2(300, 257)
         };
 
-        private Dictionary<TeamMember, DefensivePost> assignments;
+        private Dictionary<TeamMember, Post> assignments;
 
         private static readonly Vector2 HOME_KICKOFF_START = new Vector2(150, 50);
         private static readonly Vector2 HOME_KICKOFF_END = new Vector2(225, 382);
@@ -61,12 +81,14 @@ namespace Pixl_Sport.AI
         private PlayMode mode;
         private PlayMode prevMode;
 
-        private List<DefensivePost> defensivePosts;
+        private List<Post> defensivePosts;
+        private List<Post> offensivePosts;
 
         public TeamAI(Team team)
         {
             this.Team = team;
             prevMode = PlayMode.Neutral;
+            initNeutral();
         }
 
         public void SetupKickoff()
@@ -116,34 +138,85 @@ namespace Pixl_Sport.AI
         {
             /* Closest two members converge on ball! */
             List<TeamMember> getters = GetClosestPlayersToPoint(Team.Members, 2, Team.Manager.Ball.Position);
+            HashSet<TeamMember> unassigned = new HashSet<TeamMember>(Team.Members);
 
             foreach (TeamMember m in getters) {
                 m.AI.InstructionBall = Team.Manager.Ball;
                 m.AI.Instruction = Instruction.AcquireBall;
+                unassigned.Remove(m);
             }
 
-            foreach (TeamMember m in Team.Members) {
-                if (getters.Contains(m) == false) {
-                    m.AI.InstructionBall = Team.Manager.Ball;
-                    m.AI.Instruction = Instruction.GetOpen;
-                }
-            }
+            offensiveLogicUpdate(t, unassigned); 
         }
 
         private void offensivePlayModeUpdate(GameTime t)
         {
-            foreach (TeamMember m in Team.Members) {
-                m.AI.Instruction = Instruction.GetOpen;
+            if (prevMode != PlayMode.Offensive) {
+                initOffense();
+            }
+
+            offensiveLogicUpdate(t, new HashSet<TeamMember>(Team.Members));
+        }
+
+        private void offensiveLogicUpdate(GameTime t, HashSet<TeamMember> unassigned)
+        {
+            List<TeamMember> members = new List<TeamMember>();
+            foreach (TeamMember m in Team.Members.ToArray()) {
+                if (unassigned.Contains(m)) {
+                    members.Add(m);
+                }
+            }
+            List<Post> offPosts = SortByProximity(offensivePosts, Team.Manager.Ball.Position);
+
+            Dictionary<TeamMember, Post> mapping = MapPlayersToPosts(members, offPosts);
+
+            float ballThreat = getDecimatorBallThreat();
+            foreach (KeyValuePair<TeamMember, Post> kvp in mapping) {
+                if (unassigned.Contains(kvp.Key)) {
+                    unassigned.Remove(kvp.Key);
+
+                    Vector2 value = kvp.Value.Position;
+                    value.X = kvp.Value.Position.X + (ballThreat) * (Home ? 650 - kvp.Value.Position.X : 650 - kvp.Value.Position.X);
+
+                    kvp.Key.AI.InstructionPosition = value;
+                    kvp.Key.AI.InstructionRadius = 50f;
+                    kvp.Key.AI.Instruction = Instruction.GetOpen;
+                    unassigned.Remove(kvp.Key);
+                }
+            }
+
+            foreach (TeamMember m in members) {
+                if (unassigned.Contains(m)) {
+                    m.AI.Instruction = Instruction.GetOpenNoInfo;
+                }
+            }
+        }
+
+        private void initNeutral()
+        {
+            initOffense();
+        }
+
+        private void initOffense()
+        {
+            assignments = new Dictionary<TeamMember, Post>();
+            offensivePosts = new List<Post>();
+
+            foreach (Vector2 position in Home ? HOME_OFF_POSITIONS : AWAY_OFF_POSITIONS) {
+                Post p = new Post();
+                p.Assignee = null;
+                p.Position = position;
+                offensivePosts.Add(p);
             }
         }
 
         private void initDefense()
         {
-            assignments = new Dictionary<TeamMember, DefensivePost>();
-            defensivePosts = new List<DefensivePost>();
+            assignments = new Dictionary<TeamMember, Post>();
+            defensivePosts = new List<Post>();
 
             foreach (Vector2 position in Home ? HOME_DEF_POSITIONS : AWAY_DEF_POSITIONS) {
-                DefensivePost p = new DefensivePost();
+                Post p = new Post();
                 p.Assignee = null;
                 p.Position = position;
                 defensivePosts.Add(p);
@@ -165,25 +238,25 @@ namespace Pixl_Sport.AI
 
             List<TeamMember> members = Team.Members;
             HashSet<TeamMember> unassigned = new HashSet<TeamMember>(members);
-            List<DefensivePost> defPosts = SortByProximity(defensivePosts, Team.Manager.Ball.Position);
+            List<Post> defPosts = SortByProximity(defensivePosts, Team.Manager.Ball.Position);
             
-
             List<TeamMember> getters = GetClosestPlayersToPoint(Team.Members, 1, Team.Manager.Ball.Position);
             foreach (TeamMember m in getters) {
                 if (assignments.ContainsKey(m)) {
                     /* Abandon post! */
                     assignments[m].Assignee = null;
                     assignments.Remove(m);
+                    members.Remove(m);
                 }
                 unassigned.Remove(m);
                 m.AI.InstructionTeamMember = carrier;
                 m.AI.Instruction = Instruction.DefendPlayer;
             }
 
-            Dictionary<TeamMember, DefensivePost> mapping = MapPlayersToPosts(members, defPosts);
+            Dictionary<TeamMember, Post> mapping = MapPlayersToPosts(members, defPosts);
 
             float ballThreat = getBrickyBallThreat();
-            foreach (KeyValuePair<TeamMember, DefensivePost> kvp in mapping) {
+            foreach (KeyValuePair<TeamMember, Post> kvp in mapping) {
                 if (unassigned.Contains(kvp.Key)) {
                     unassigned.Remove(kvp.Key);
 
@@ -209,6 +282,23 @@ namespace Pixl_Sport.AI
                     m.AI.Instruction = Instruction.DefendClosestPlayer;
                 }
             }
+        }
+
+        private float getDecimatorBallThreat()
+        {
+            float dbt = 0f;
+            if (Home) {
+                /* BBT */
+                dbt = ((Team.Manager.Ball.Position.X) - 225f) / 475f;
+                
+            } else {
+                dbt = ((700 - Team.Manager.Ball.Position.X) - 225f) / 475f;
+                
+            }
+
+            dbt = Math.Min(dbt, 1f);
+            dbt = Math.Max(dbt, 0f);
+            return dbt;
         }
 
         private float getBrickyBallThreat()
@@ -241,23 +331,23 @@ namespace Pixl_Sport.AI
             return members;
         }
 
-        public static List<DefensivePost> SortByProximity(List<DefensivePost> positions, Vector2 point)
+        public static List<Post> SortByProximity(List<Post> positions, Vector2 point)
         {
-            List<DefensivePost> points = new List<DefensivePost>(positions);
+            List<Post> points = new List<Post>(positions);
 
-            points.Sort(delegate(DefensivePost a, DefensivePost b) {
+            points.Sort(delegate(Post a, Post b) {
                 return Comparer<float>.Default.Compare(Vector2.DistanceSquared(a.Position, point), Vector2.DistanceSquared(b.Position, point));
             });
 
             return points;
         }
 
-        public static Dictionary<TeamMember, DefensivePost> MapPlayersToPosts(List<TeamMember> players, List<DefensivePost> points)
+        public static Dictionary<TeamMember, Post> MapPlayersToPosts(List<TeamMember> players, List<Post> points)
         {
-            Dictionary<TeamMember, DefensivePost> mapping = new Dictionary<TeamMember, DefensivePost>();
+            Dictionary<TeamMember, Post> mapping = new Dictionary<TeamMember, Post>();
 
             List<TeamMember> unassigned = new List<TeamMember>(players);
-            foreach (DefensivePost p in points) {
+            foreach (Post p in points) {
                 if (p.Assignee != null) {
                     TeamMember c = p.Assignee;
                     unassigned.Remove(c);
