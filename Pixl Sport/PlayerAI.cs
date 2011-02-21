@@ -49,11 +49,45 @@ namespace Pixl_Sport
         private float instructionRadius;
         private TeamMember instructionTeamMember;
 
-        public Ball InstructionBall { get { return instructionBall; } set { instructionBall = value; } } 
-        public Vector2 InstructionPosition { get { return instructionPosition; } set { instructionPosition = value; }}
-        public float InstructionRadius { get { return instructionRadius; } set { instructionRadius = value; } }
-        public TeamMember InstructionTeamMember { get { return instructionTeamMember; } set { instructionTeamMember = value; } }
-
+        public Ball InstructionBall { get { return instructionBall; } set {
+            if (instructionBall != value) {
+                action = Action.NoAction;
+            }
+            instructionBall = value; }
+        }
+        public Vector2 InstructionPosition
+        {
+            get { return instructionPosition; }
+            set
+            {
+                if (instructionPosition != value) {
+                    action = Action.NoAction;
+                }
+                instructionPosition = value;
+            }
+        }
+        public float InstructionRadius
+        {
+            get { return instructionRadius; }
+            set
+            {
+                if (instructionRadius != value) {
+                    action = Action.NoAction;
+                }
+                instructionRadius = value;
+            }
+        }
+        public TeamMember InstructionTeamMember
+        {
+            get { return instructionTeamMember; }
+            set
+            {
+                if (instructionTeamMember != value) {
+                    action = Action.NoAction;
+                }
+                instructionTeamMember = value;
+            }
+        }
         private Action action;
         private Ball actionBall;
         private Vector2 actionPosition;
@@ -110,13 +144,21 @@ namespace Pixl_Sport
 
         private void selectActionForDefendArea()
         {
-            if (player.Position == actionPosition) {
+            if (Vector2.DistanceSquared(player.Position, actionPosition) < actionRadius * actionRadius) {
+                /* Where should we go? */
+                TeamMember closest = null;
+                foreach (TeamMember m in parentAi.Opposition.Members) {
+                    if (Vector2.DistanceSquared(m.Position, actionPosition) < actionRadius * actionRadius) {
+                    }
+                }
+                
                 /* GOT IT! */
                 action = Action.Wait;
             }
 
             action = Action.MoveToPosition;
             actionPosition = instructionPosition;
+            actionRadius = instructionRadius;
         }
 
         private void performAction(GameTime t)

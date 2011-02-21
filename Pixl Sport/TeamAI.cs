@@ -18,6 +18,7 @@ namespace Pixl_Sport
             /* DEFENSIVE ACTIONS! */
             DefendArea, /* Position, Radius */
             DefendPlayer, /* TeamMember */
+            DefendToGoal, /* Position */
 
             /* OFFENSIVE ACTIONS! */
             GetOpen /* Position, Radius */
@@ -37,9 +38,9 @@ namespace Pixl_Sport
         };
 
         private static readonly List<Vector2> AWAY_DEF_BRICKY_POSITIONS = new List<Vector2>() { 
-            new Vector2(480, 30),
-            new Vector2(600, 216),
-            new Vector2(480, 400)
+            new Vector2(425, 108),
+            new Vector2(500, 216),
+            new Vector2(425, 324)
         };
 
         private static readonly Vector2 HOME_KICKOFF_START = new Vector2(150, 50);
@@ -50,13 +51,13 @@ namespace Pixl_Sport
 
         private bool home;
 
-        private Team team;
-        private Team opposition;
+        public Team Team;
+        public Team Opposition;
         private PlayMode mode;
 
         public TeamAI(Team team)
         {
-            this.team = team;
+            this.Team = team;
         }
 
         public void SetupKickoff()
@@ -64,9 +65,9 @@ namespace Pixl_Sport
             setOpposition();
             Vector2 start = home ? HOME_KICKOFF_START : AWAY_KICKOFF_START;
             Vector2 end = home ? HOME_KICKOFF_END : AWAY_KICKOFF_END;
-            for (int i = 0; i < team.Members.Count; i++) {
-                TeamMember m = team.Members[i];
-                m.Position = start + (float)i / (float)team.Members.Count * (end - start);
+            for (int i = 0; i < Team.Members.Count; i++) {
+                TeamMember m = Team.Members[i];
+                m.Position = start + (float)i / (float)Team.Members.Count * (end - start);
             }
         }
 
@@ -91,28 +92,28 @@ namespace Pixl_Sport
 
         private void setOpposition()
         {
-            if (team == team.Manager.Team1) {
+            if (Team == Team.Manager.Team1) {
                 home = true;
-                opposition = team.Manager.Team2;
+                Opposition = Team.Manager.Team2;
             } else {
                 home = false;
-                opposition = team.Manager.Team1;
+                Opposition = Team.Manager.Team1;
             }
         }
 
         private void neutralPlayModeUpdate(GameTime t)
         {
             /* Closest two members converge on ball! */
-            List<TeamMember> getters = getClosestPlayersToPoint(team.Members, 2, team.Manager.Ball.Position);
+            List<TeamMember> getters = GetClosestPlayersToPoint(Team.Members, 2, Team.Manager.Ball.Position);
 
             foreach (TeamMember m in getters) {
-                m.AI.InstructionBall = team.Manager.Ball;
+                m.AI.InstructionBall = Team.Manager.Ball;
                 m.AI.Instruction = Instruction.AcquireBall;
             }
 
-            foreach (TeamMember m in team.Members) {
+            foreach (TeamMember m in Team.Members) {
                 if (getters.Contains(m) == false) {
-                    m.AI.InstructionBall = team.Manager.Ball;
+                    m.AI.InstructionBall = Team.Manager.Ball;
                     m.AI.Instruction = Instruction.GetOpen;
                 }
             }
@@ -120,19 +121,22 @@ namespace Pixl_Sport
 
         private void offensivePlayModeUpdate(GameTime t)
         {
-            foreach (TeamMember m in team.Members) {
+            foreach (TeamMember m in Team.Members) {
                 m.AI.Instruction = Instruction.GetOpen;
             }
         }
 
         private void defensivePlayModeUpdate(GameTime t)
         {
-            List<TeamMember> members = team.Members;
-            List<TeamMember> bricky = filterByPosition(members, Team.Position.Bricky);
-            List<Vector2> brickyPositions = sortByProximity(home ? HOME_DEF_BRICKY_POSITIONS : AWAY_DEF_BRICKY_POSITIONS, team.Manager.Ball.Position);
-            Dictionary<TeamMember, Vector2> mapping = mapPlayersToPoints(bricky, brickyPositions);
+            List<TeamMember> members = Team.Members;
+            List<TeamMember> bricky = FilterByPosition(members, Team.Position.Bricky);
+            List<Vector2> brickyPositions = SortByProximity(home ? HOME_DEF_BRICKY_POSITIONS : AWAY_DEF_BRICKY_POSITIONS, Team.Manager.Ball.Position);
+            Dictionary<TeamMember, Vector2> mapping = MapPlayersToPoints(bricky, brickyPositions);
+            float ballThreat = getBrickyBallThreat();
             foreach (KeyValuePair<TeamMember, Vector2> kvp in mapping) {
-                kvp.Key.AI.InstructionPosition = kvp.Value;
+                Vector2 value = kvp.Value;
+                value.X = kvp.Value.X + (ballThreat) * (home ? 50 + kvp.Value.X : 650 - kvp.Value.X);
+                kvp.Key.AI.InstructionPosition = value;
                 kvp.Key.AI.Instruction = Instruction.DefendArea;
             }
 
@@ -143,7 +147,22 @@ namespace Pixl_Sport
             }
         }
 
-        private List<TeamMember> getClosestPlayersToPoint(List<TeamMember> list, int number, Vector2 point)
+        private float getBrickyBallThreat()
+        {
+            float bbt = 0f;
+            if (home) {
+                /* BBT */
+                bbt = ((700 - Team.Manager.Ball.Position.X) - 225f) / 475f;
+            } else {
+                bbt = ((Team.Manager.Ball.Position.X) - 225f) / 475f;
+            }
+
+            bbt = Math.Min(bbt, 1f);
+            bbt = Math.Max(bbt, 0f);
+            return bbt;
+        }
+
+        public static List<TeamMember> GetClosestPlayersToPoint(List<TeamMember> list, int number, Vector2 point)
         {
             List<TeamMember> members = new List<TeamMember>(list);
 
@@ -158,7 +177,7 @@ namespace Pixl_Sport
             return members;
         }
 
-        private List<Vector2> sortByProximity(List<Vector2> positions, Vector2 point)
+        public static List<Vector2> SortByProximity(List<Vector2> positions, Vector2 point)
         {
             List<Vector2> points = new List<Vector2>(positions);
 
@@ -169,13 +188,13 @@ namespace Pixl_Sport
             return points;
         }
 
-        private Dictionary<TeamMember, Vector2> mapPlayersToPoints(List<TeamMember> players, List<Vector2> points)
+        public static Dictionary<TeamMember, Vector2> MapPlayersToPoints(List<TeamMember> players, List<Vector2> points)
         {
             Dictionary<TeamMember, Vector2> mapping = new Dictionary<TeamMember, Vector2>();
 
             List<TeamMember> unassigned = new List<TeamMember>(players);
             foreach (Vector2 p in points) {
-                List<TeamMember> closest = getClosestPlayersToPoint(unassigned, 1, p);
+                List<TeamMember> closest = GetClosestPlayersToPoint(unassigned, 1, p);
                 if (closest.Count > 0) {
                     TeamMember c = closest[0];
                     unassigned.Remove(c);
@@ -186,7 +205,7 @@ namespace Pixl_Sport
             return mapping;
         }
 
-        private List<TeamMember> filterByPosition(List<TeamMember> members, Team.Position position) {
+        public static List<TeamMember> FilterByPosition(List<TeamMember> members, Team.Position position) {
             List<TeamMember> tm = new List<TeamMember>();
             foreach (TeamMember m in members) {
                 if (m.Profession == position) {
@@ -200,13 +219,13 @@ namespace Pixl_Sport
         {
             mode = PlayMode.Neutral;
 
-            foreach (TeamMember m in team.Members) {
+            foreach (TeamMember m in Team.Members) {
                 if (m.HasBall) {
                     mode = PlayMode.Offensive;
                 }
             }
 
-            foreach (TeamMember m in opposition.Members) {
+            foreach (TeamMember m in Opposition.Members) {
                 if (m.HasBall) {
                     mode = PlayMode.Defensive;
                 }
