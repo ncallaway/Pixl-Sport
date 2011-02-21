@@ -33,9 +33,11 @@ namespace Pixl_Sport.AI
         }
 
         private static readonly List<Vector2> HOME_DEF_POSITIONS = new List<Vector2>() { 
-            new Vector2(30, 30),
-            new Vector2(30, 300),
-            new Vector2(50, 300)
+            new Vector2(275, 108),
+            new Vector2(275, 324),
+            new Vector2(200, 216),
+            new Vector2(400, 175),
+            new Vector2(400, 257)
         };
 
         private static readonly List<Vector2> AWAY_DEF_POSITIONS = new List<Vector2>() { 
@@ -43,7 +45,7 @@ namespace Pixl_Sport.AI
             new Vector2(425, 324),
             new Vector2(500, 216),
             new Vector2(300, 175),
-            new Vector2(300, 257),
+            new Vector2(300, 257)
         };
 
         private Dictionary<TeamMember, DefensivePost> assignments;

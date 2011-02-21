@@ -132,6 +132,9 @@ namespace Pixl_Sport.AI
                 case TeamAI.Instruction.DefendPlayer:
                     selectActionForDefendPlayer();
                     break;
+                case TeamAI.Instruction.DefendClosestPlayer:
+                    selectActionForDefendClosestPlayer();
+                    break;
                 case TeamAI.Instruction.GetOpen:
                     action = Action.Wait;
                     break;
@@ -153,6 +156,21 @@ namespace Pixl_Sport.AI
         {
             action = Action.DefendPlayer;
             actionTeamMember = instructionTeamMember;
+        }
+
+        private void selectActionForDefendClosestPlayer()
+        {
+            Vector2 ballPos = parentAi.Team.Manager.Ball.Position;
+            TeamMember closest = null;
+            foreach (TeamMember m in parentAi.Opposition.Members) {
+                if (closest == null
+                    || Vector2.DistanceSquared(m.Position, ballPos) < Vector2.DistanceSquared(closest.Position, ballPos)) {
+                    closest = m;
+                }
+            }
+
+            action = Action.DefendPlayer;
+            actionTeamMember = closest;
         }
 
         private void selectActionForDefendArea()
@@ -228,21 +246,29 @@ namespace Pixl_Sport.AI
         private void performDefendPlayer()
         {
             Vector2 direction;
+            Vector2 target;
+            float distance = Vector2.Distance(actionTeamMember.Position, player.Position);
+            //target = actionTeamMember.Position + actionTeamMember.Velocity * distance;
+            target = actionTeamMember.Position;
             if (actionTeamMember.HasBall) {
                 /* Get between him and the goal! */
-                direction.Y = 0;
-                direction.X = parentAi.Home ? 650 - actionTeamMember.Position.X : actionTeamMember.Position.X - 50;
+                direction = parentAi.Home ? Vector2.UnitX : -Vector2.UnitX;
+                
+                if ( Math.Abs(actionTeamMember.Position.Y - player.Position.Y) > 10f ) {
+                    target = target + direction * 15f;
+                }
             } else {
                 /* Get between him and the ball! */
                 direction = parentAi.Team.Manager.Ball.Position - actionTeamMember.Position;
+                target = target + direction * 15f;
             }
 
-            Vector2 myDirection;
-            myDirection.X = -direction.Y;
-            myDirection.Y = direction.X;
 
-            if (Vector2.Dot(actionTeamMember.Position - player.Position, myDirection) < 0) {
-                myDirection = -myDirection;
+            Vector2 myDirection = (target - player.Position);
+
+            if (myDirection.LengthSquared() < TeamMember.PLAYER_SPEED * TeamMember.PLAYER_SPEED) {
+                player.Position = target;
+                return;
             }
 
             myDirection.Normalize();
