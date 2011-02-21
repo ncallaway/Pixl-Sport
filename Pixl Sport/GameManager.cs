@@ -26,7 +26,7 @@ namespace Pixl_Sport
 
         // These variables encompass the gameclock.
 
-        private static int QUARTERTIME = 600000;
+        private static int QUARTERTIME = 120000;
         private int time;
         public int Time { get { return time; } set { time = Math.Max(time - value, 0); } }
         public int MinTime { get { return time / 60000; } }
@@ -80,9 +80,14 @@ namespace Pixl_Sport
 
             SetupKickoff();
 
-            rulesList.Add(new OutOfBounds(this, new ScoreChange(-4)));
+            rulesList.Add(new OutOfBounds(this, new ScoreChange(this, -4)));
 
-            rulesList.Add(new RunInGoal(this, new KickOff()));
+
+            rulesList.Add(new RunInGoal(this, new ScoreChange(this, 5)));
+            rulesList.Add(new OutTheBackGoal(this, new ScoreChange(this, 3)));
+
+
+            
 
             rulesList.Add(new OutOfBounds( this, new LightOnFire(Judgement.JudgementType.Team)));
             players.Add(new Player(Team1));
@@ -95,7 +100,7 @@ namespace Pixl_Sport
             Team1.SetupKickoff(true);
             Team2.SetupKickoff(false);
             Ball.Position = new Vector2(352f, 432f / 2f);
-
+            Ball.Clear();
             running = true;
         }
 
@@ -144,8 +149,14 @@ namespace Pixl_Sport
                 if(Ball.Bounds.Intersects(TM.Bounds)&& Ball.State != Ball.BallState.Held) TM.GrabBall(Ball);
                 
             }
-            Ball.Update(T);
+            if (Ball.State != Ball.BallState.Held) foreach (TeamMember TM in Team2.Members)
+                {
+                    if (Ball.Bounds.Intersects(TM.Bounds) && Ball.State != Ball.BallState.Held) TM.GrabBall(Ball);
 
+                }
+
+            Ball.Update(T);
+            RulesCheck();
         }
 
         public void Draw(GameTime t, SpriteBatch b)

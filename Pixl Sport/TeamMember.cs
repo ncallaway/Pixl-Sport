@@ -78,7 +78,7 @@ namespace Pixl_Sport
         {
 
             if (!PlayerControlled) {
-                ai.Update(t);
+           //     ai.Update(t);
             }
 
             trackMovingAverage();
@@ -110,17 +110,42 @@ namespace Pixl_Sport
 
 
         public void Pass(Vector2 target)
-        {   
-            HeldBall.SendFlying(target, passStrength/2, passStrength/2);
+        {
+            Random rand = new Random();
+            int deviation = 0;
+           
+                deviation = (int)(rand.NextDouble() * 30) % 30 - 15;
+            
+            deviation /= passAccuracy;
+
+            target += new Vector2((float)Math.Cos(deviation), (float)Math.Sin(deviation));
+
+
+                HeldBall.SendFlying(target, passStrength / 5, passStrength / 2);
             HasBall = false;
             HeldBall = null;
         }
+
+        public void Kick(Vector2 target)
+        {
+            Random rand = new Random();
+            int deviation = 0;
+            deviation += (int)(rand.NextDouble() * 30) % 30 - 15;
+            
+            deviation /= (passAccuracy / 3);
+            target += new Vector2((float)Math.Cos(deviation), (float)Math.Sin(deviation));
+
+            HeldBall.SendFlying(target, passStrength / 5, passStrength*2);
+            HasBall = false;
+            HeldBall = null;
+        }
+
 
         public void GrabBall(Ball ball)
         {
             HeldBall = ball;
             HasBall = true;
-            ball.Clear();
+            
 
             ball.Possessor = this;
             ball.State = Ball.BallState.Held;

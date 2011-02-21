@@ -44,7 +44,7 @@ namespace Pixl_Sport
         {
            if (!CurrentCharacter.HasBall) foreach (TeamMember TM in team.Members) if(TM.HasBall) CurrentCharacter = TM;
             input.Update();
-            if (CurrentCharacter.HasBall && input.RStickPosition().Length() >= .5) CurrentCharacter.Pass(input.RStickPosition());
+            if (CurrentCharacter.HasBall && input.RStickPosition().Length() >= .5) if (input.IsFirePressed()) CurrentCharacter.Kick(input.RStickPosition()); else CurrentCharacter.Pass(input.RStickPosition());
             CurrentCharacter.Position += input.LStickPosition() * TeamMember.PLAYER_SPEED;
 
         }

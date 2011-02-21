@@ -18,12 +18,14 @@ namespace Pixl_Sport
         private float arcApex;
         private bool apexReached;
 
+        private float h;
+
 
         public BoundingBox Bounds
         {
             get
             {
-                return new BoundingBox(new Vector3(position - Vector2.One, height), new Vector3(position + 2 * Vector2.One,height = 2f));
+                return new BoundingBox(new Vector3(position - Vector2.One, h), new Vector3(position + 2 * Vector2.One,h + 2f));
             }
         }
 
@@ -48,13 +50,12 @@ namespace Pixl_Sport
 
         public Ball()
         {
+            apexReached = false;
             height = 0f;
-            Random rand = new Random(5);
-            direction = new Vector2((float)rand.NextDouble(), (float)rand.NextDouble());
-            direction.Normalize();
-            velocity = 1f;
-            arcApex = 2f;
-            State = BallState.Flying;
+            h = 1f;
+            velocity = .5f;
+            arcApex = 20f;
+            Bounce();
         }
 
 
@@ -62,7 +63,7 @@ namespace Pixl_Sport
         public void Draw(SpriteBatch batch, Texture2D pixels, Vector2 fieldOrigin, uint scaleSize)
         {
             Vector2 drawLocation = (fieldOrigin + position) * scaleSize;
-            Rectangle destination = new Rectangle((int)drawLocation.X, (int)drawLocation.Y, 2 * (int)scaleSize, 2 * (int)scaleSize);
+            Rectangle destination = new Rectangle((int)drawLocation.X, (int)drawLocation.Y, 2 * (int)scaleSize* (int) (h /5 +1), 2 * (int)scaleSize *(int) (h /5+1));
 
             batch.Draw(pixels, destination, COLOR_BALL);
         }
@@ -70,51 +71,25 @@ namespace Pixl_Sport
 
         public void Update ( GameTime t)
         {
-           
+            h -= .1f;
+            h = Math.Max(h, 0);
 
-
-
+            
             switch (State){
                 case BallState.Flying:
-                    //position += direction*velocity;
-                    if (!apexReached)
-                    {
-                        //height+=.4f;
-                        if (height > arcApex) apexReached = true;
-                    }
-                    height -=.2f;
-                    
-                    if(height <= 1f) 
-                    {
-                    //State = BallState.Bouncing;
-                    Random rand = new Random();
-                    direction = new Vector2((float)rand.NextDouble(), (float)(rand.NextDouble()));
-                    direction.Normalize();
-                    SendFlying(direction, velocity / 2, arcApex / 2);
-                   }
+
+                    position += direction*velocity;
+                    if (!apexReached) h+=.3f;
+                    if (h > arcApex) apexReached = true;
+                    if (h < .2f) Bounce();
+
+
+
                     break;
                 case BallState.Held:
                     break;
                 case BallState.Bouncing:
-                    //position += direction * velocity;
-                    if (!apexReached)
-                    {
-                        height++;
-                        if (height > arcApex) apexReached = true;
-                    }
-                    if (apexReached) height--;
-                    if (height <= 1f)
-                    {
-                        State = BallState.Bouncing;
-                        Random rand = new Random();
-                        direction = new Vector2((float)rand.NextDouble(), (float)(rand.NextDouble()));
-                        direction.Normalize();
-                        velocity /= 2;
-                        apexReached = false;
-                        arcApex /= 2;
-                        if (velocity <= .5f) State = BallState.Dead;
-                    }
-                    
+                        
                     break;
 
             
@@ -124,17 +99,18 @@ namespace Pixl_Sport
         public void Clear()
         {
             direction = Vector2.Zero;
-            apexReached = false;
-            height = .2f;
+            apexReached = true;
+            height = 20f;
 
         }
 
 
         public void SendFlying(Vector2 direction,float strength, float apex)
         {
-            height = 2.1f;
-            arcApex = 3;
-            velocity = strength/3;
+            apexReached = false;
+            h = 2.1f;
+            arcApex = apex;
+            velocity = strength;
             this.direction = direction;
             this.direction.Normalize();
 
@@ -143,7 +119,17 @@ namespace Pixl_Sport
             State = BallState.Flying;
         }
 
-
+        public void Bounce()
+        {
+            Random rand = new Random();
+            int deviation = 0;
+          
+              deviation = (int)(rand.NextDouble() * 120) % 30 - 15;
+              
+              direction = new Vector2((float)Math.Cos(deviation), (float)Math.Sin(deviation));
+              direction.Normalize();
+              SendFlying(direction, velocity / 2, arcApex / 2);
+        }
 
     }
 }

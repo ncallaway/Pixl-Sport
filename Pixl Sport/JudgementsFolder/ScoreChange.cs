@@ -10,10 +10,10 @@ namespace Pixl_Sport
 
         protected int scoreDelta;
 
-        public ScoreChange()
+        public ScoreChange(GameManager M)
         {
             Judged = JudgementType.Team;
-        
+            manager = M;
         
         }
 
@@ -24,11 +24,19 @@ namespace Pixl_Sport
 
         }
 
+        public ScoreChange(GameManager M, int amount)
+        {
+            scoreDelta = amount;
+            Judged = JudgementType.Team;
+            manager = M;
+        }
+
 
         public override void Execute(Team T)
         {
-            T.Score = scoreDelta;
-            
+            T.Score += scoreDelta;
+            manager.SetupKickoff();
+           
         }
 
         public override void Execute(TeamMember TM)

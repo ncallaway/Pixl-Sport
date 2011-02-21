@@ -18,7 +18,7 @@ namespace Pixl_Sport
         public JudgementType Judged;
         protected String id;
         public String Id { get { return id; } }
-
+        protected GameManager manager;
 
     
 
