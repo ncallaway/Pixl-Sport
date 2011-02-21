@@ -84,6 +84,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\DefensivePost.cs" />
     <Compile Include="Ball.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="GameManager.cs" />
@@ -92,7 +93,7 @@
     <Compile Include="JudgementsFolder\LightOnFire.cs" />
     <Compile Include="JudgementsFolder\KickOff.cs" />
     <Compile Include="Player.cs" />
-    <Compile Include="PlayerAI.cs" />
+    <Compile Include="AI\PlayerAI.cs" />
     <Compile Include="JudgementsFolder\ScoreChange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
@@ -102,7 +103,7 @@
     <Compile Include="RulesFolder\Rule.cs" />
     <Compile Include="Scoreboard.cs" />
     <Compile Include="Team.cs" />
-    <Compile Include="TeamAI.cs" />
+    <Compile Include="AI\TeamAI.cs" />
     <Compile Include="TeamMember.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -7,6 +7,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using Pixl_Sport.AI;
+
 namespace Pixl_Sport
 {
     class TeamMember

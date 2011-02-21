@@ -5,7 +5,7 @@ using System.Text;
 
 using Microsoft.Xna.Framework;
 
-namespace Pixl_Sport
+namespace Pixl_Sport.AI
 {
     class PlayerAI
     {
@@ -18,8 +18,11 @@ namespace Pixl_Sport
             MoveToTeamMember,
             MoveToBall,
 
-            CreateClearLineBetweenPlayer,
+            CreateClearLineBetweenBall,
             CreateClearLineBetweenGoal,
+            DefendPlayer,
+
+            Stunned,
 
             Wait,
         }
@@ -43,11 +46,19 @@ namespace Pixl_Sport
             parentAi = player.Team.AI;
         }
 
+        public void Stun(TimeSpan duration)
+        {
+            action = Action.Stunned;
+            actionTimeSpan = duration;
+        }
+
         private TeamAI.Instruction instruction;
         private Ball instructionBall;
         private Vector2 instructionPosition;
         private float instructionRadius;
         private TeamMember instructionTeamMember;
+
+        
 
         public Ball InstructionBall { get { return instructionBall; } set {
             if (instructionBall != value) {
@@ -92,6 +103,7 @@ namespace Pixl_Sport
         private Ball actionBall;
         private Vector2 actionPosition;
         private float actionRadius;
+        private TimeSpan actionTimeSpan;
         private TeamMember actionTeamMember;
 
         private TeamAI parentAi;
@@ -100,30 +112,25 @@ namespace Pixl_Sport
 
         public void Update(GameTime t)
         {
-            if (evaluateCurrentAction()) {
-                setActionForInstruction();
-            }
+            setActionForInstruction();
 
             performAction(t);
         }
 
-        private bool evaluateCurrentAction()
-        {
-            if (action == Action.NoAction || action == Action.Wait) {
-                return true;
-            }
-
-            return false;
-        }
-
         private void setActionForInstruction()
         {
+            /* SPECIAL ACTIONS!! */
+            if (action == Action.Stunned) { return; }
+
             switch (instruction) {
                 case TeamAI.Instruction.AcquireBall:
                     selectActionForAcquireBall();
                     break;
                 case TeamAI.Instruction.DefendArea:
                     selectActionForDefendArea();
+                    break;
+                case TeamAI.Instruction.DefendPlayer:
+                    selectActionForDefendPlayer();
                     break;
                 case TeamAI.Instruction.GetOpen:
                     action = Action.Wait;
@@ -142,23 +149,47 @@ namespace Pixl_Sport
             actionBall = instructionBall;
         }
 
+        private void selectActionForDefendPlayer()
+        {
+            action = Action.DefendPlayer;
+            actionTeamMember = instructionTeamMember;
+        }
+
         private void selectActionForDefendArea()
         {
-            if (Vector2.DistanceSquared(player.Position, actionPosition) < actionRadius * actionRadius) {
+            if (Vector2.DistanceSquared(player.Position, instructionPosition) < instructionRadius * instructionRadius) {
                 /* Where should we go? */
+                Vector2 ballPos = parentAi.Team.Manager.Ball.Position;
                 TeamMember closest = null;
                 foreach (TeamMember m in parentAi.Opposition.Members) {
                     if (Vector2.DistanceSquared(m.Position, actionPosition) < actionRadius * actionRadius) {
+                        if (closest == null 
+                            || Vector2.DistanceSquared(m.Position, ballPos) < Vector2.DistanceSquared(closest.Position, ballPos)) {
+                            closest = m;
+                        }
                     }
+                }
+
+                if (closest == null) {
+                    /* Move to Point nearest ball-carrier within our radius */
+                    Vector2 direction = (ballPos - instructionPosition);
+                    direction.Normalize();
+
+                    actionPosition = instructionPosition + direction * instructionRadius;
+                    action = Action.MoveToPosition;
+                    return;
                 }
                 
                 /* GOT IT! */
-                action = Action.Wait;
+                if (closest.HasBall) {
+                    actionTeamMember = closest;
+                    action = Action.DefendPlayer;
+                }
+                return;
             }
 
             action = Action.MoveToPosition;
             actionPosition = instructionPosition;
-            actionRadius = instructionRadius;
         }
 
         private void performAction(GameTime t)
@@ -170,12 +201,52 @@ namespace Pixl_Sport
                 case Action.MoveToPosition:
                     performMoveToPosition();
                     break;
+                case Action.DefendPlayer:
+                    performDefendPlayer();
+                    break;
+                case Action.Stunned:
+                    performStunned(t);
+                    break;
                 case Action.NoAction:
                 case Action.Wait:
                 default:
                     performWait();
                     break;
             }
+        }
+
+        private void performStunned(GameTime t)
+        {
+            actionTimeSpan -= t.ElapsedGameTime;
+
+            if (actionTimeSpan.TotalMilliseconds < 0) {
+                /* NO LONGER STUNNED */
+                action = Action.NoAction;
+            }
+        }
+
+        private void performDefendPlayer()
+        {
+            Vector2 direction;
+            if (actionTeamMember.HasBall) {
+                /* Get between him and the goal! */
+                direction.Y = 0;
+                direction.X = parentAi.Home ? 650 - actionTeamMember.Position.X : actionTeamMember.Position.X - 50;
+            } else {
+                /* Get between him and the ball! */
+                direction = parentAi.Team.Manager.Ball.Position - actionTeamMember.Position;
+            }
+
+            Vector2 myDirection;
+            myDirection.X = -direction.Y;
+            myDirection.Y = direction.X;
+
+            if (Vector2.Dot(actionTeamMember.Position - player.Position, myDirection) < 0) {
+                myDirection = -myDirection;
+            }
+
+            myDirection.Normalize();
+            player.Position += myDirection;
         }
 
         private void performMoveToBall()
