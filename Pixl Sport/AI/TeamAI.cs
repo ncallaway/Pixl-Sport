@@ -170,16 +170,16 @@ namespace Pixl_Sport.AI
 
             Dictionary<TeamMember, Post> mapping = MapPlayersToPosts(members, offPosts);
 
-            float ballThreat = getBrickyBallThreat();
+            float ballThreat = getDecimatorBallThreat();
             foreach (KeyValuePair<TeamMember, Post> kvp in mapping) {
                 if (unassigned.Contains(kvp.Key)) {
                     unassigned.Remove(kvp.Key);
 
                     Vector2 value = kvp.Value.Position;
-                    value.X = kvp.Value.Position.X + (ballThreat) * (Home ? 650 - kvp.Value.Position.X : 50 + kvp.Value.Position.X);
+                    value.X = kvp.Value.Position.X + (ballThreat) * (Home ? 650 - kvp.Value.Position.X : 650 - kvp.Value.Position.X);
 
                     kvp.Key.AI.InstructionPosition = value;
-                    kvp.Key.AI.InstructionRadius = 150;
+                    kvp.Key.AI.InstructionRadius = 50f;
                     kvp.Key.AI.Instruction = Instruction.GetOpen;
                     unassigned.Remove(kvp.Key);
                 }
@@ -286,7 +286,19 @@ namespace Pixl_Sport.AI
 
         private float getDecimatorBallThreat()
         {
-            return (1f - getBrickyBallThreat());
+            float dbt = 0f;
+            if (Home) {
+                /* BBT */
+                dbt = ((Team.Manager.Ball.Position.X) - 225f) / 475f;
+                
+            } else {
+                dbt = ((700 - Team.Manager.Ball.Position.X) - 225f) / 475f;
+                
+            }
+
+            dbt = Math.Min(dbt, 1f);
+            dbt = Math.Max(dbt, 0f);
+            return dbt;
         }
 
         private float getBrickyBallThreat()

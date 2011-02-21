@@ -180,6 +180,17 @@ namespace Pixl_Sport.AI
 
         private void selectActionForGetOpen()
         {
+            float distanceS = Vector2.DistanceSquared(player.Position, instructionPosition);
+
+            if (action == Action.CreateClearLineBetweenBall && distanceS < (instructionRadius * instructionRadius)) {
+                return;
+            }
+
+            if (distanceS < (instructionRadius * instructionRadius) * .6f) {
+                action = Action.CreateClearLineBetweenBall;
+                actionBall = parentAi.Team.Manager.Ball;
+                return;
+            }
             action = Action.MoveToPosition;
             actionPosition = instructionPosition;
         }
@@ -187,6 +198,10 @@ namespace Pixl_Sport.AI
         private void selectActionForGetOpenNoInfo()
         {
             float ballDistance = Vector2.Distance(player.Position, parentAi.Team.Manager.Ball.Position);
+
+            if (action == Action.CreateClearLineBetweenBall && ballDistance < 75f) {
+                return;
+            }
 
             if (ballDistance < 50f) {
                 action = Action.CreateClearLineBetweenBall;
@@ -247,6 +262,9 @@ namespace Pixl_Sport.AI
                 case Action.DefendPlayer:
                     performDefendPlayer();
                     break;
+                case Action.CreateClearLineBetweenBall:
+                    performCreateClearLineBetweenBall();
+                    break;
                 case Action.Stunned:
                     performStunned(t);
                     break;
@@ -256,6 +274,39 @@ namespace Pixl_Sport.AI
                     performWait();
                     break;
             }
+        }
+
+        private void performCreateClearLineBetweenBall()
+        {
+            Ball ball = parentAi.Team.Manager.Ball;
+
+            Vector2 ballDirection = ball.Position - player.Position;
+            ballDirection.Normalize();
+
+            /* Perpendicular! */
+            Vector2 upDirection; upDirection.X = -ballDirection.Y; upDirection.Y = ballDirection.X;
+            Vector2 downDirection = -upDirection;
+
+            TeamMember tmMin = null;
+            float dotAbsMin = 100f;
+            foreach (TeamMember m in parentAi.Opposition.Members) {
+                if (Math.Abs(Vector2.Dot(m.Position - player.Position, upDirection)) < dotAbsMin) {
+                    dotAbsMin = Math.Abs(Vector2.Dot(m.Position - player.Position, upDirection));
+                    tmMin = m;
+                }
+            }
+
+            if (tmMin == null) { return; }
+            Vector2 direction = Vector2.Zero;
+            
+            if (Vector2.Dot(tmMin.Position - player.Position, upDirection) > 0) {
+                /* GO DOWN! */
+                direction = downDirection;
+            } else {
+                direction = upDirection;
+            }
+
+            player.Position += direction * TeamMember.PLAYER_SPEED;
         }
 
         private void performStunned(GameTime t)
