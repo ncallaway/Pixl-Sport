@@ -19,8 +19,8 @@ namespace Pixl_Sport
         private int number;
         public int Number { get { return number; } set { number = Math.Abs(value % 100); } }
 
-        private String profession;
-        public String Profession { get { return Profession; } }
+        private Team.Position profession;
+        public Team.Position Profession { get { return profession; } set { profession = value; } }
 
         public bool OnField;
 
@@ -63,6 +63,7 @@ namespace Pixl_Sport
             passAccuracy = 10;
 
             numPositionAvgFrames = 0;
+            profession = Team.Position.Decimator;
         }
 
         public void Draw(SpriteBatch batch, Texture2D pixels, Vector2 fieldOrigin, uint scaleSize)

@@ -10,6 +10,14 @@ namespace Pixl_Sport
 {
     class Team
     {
+        public enum Position
+        {
+            Decimator,
+            Ballista,
+            Bricky,
+            Goalie
+        }
+
         private String teamName;
         public String TeamName { get { return teamName; } }
 
@@ -42,41 +50,20 @@ namespace Pixl_Sport
             for (int i = 0; i < 7; i++) {
                 TeamMember m = new TeamMember(this);
                 m.OnField = true;
+                if (i < 3) {
+                    m.Profession = Position.Bricky;
+                } else if (i == 3) {
+                    m.Profession = Position.Decimator;
+                } else {
+                    m.Profession = Position.Ballista;
+                }
                 Members.Add(m);
             }
         }
 
         public void SetupKickoff(bool left)
         {
-            Vector2 min = new Vector2(0, 0);
-            Vector2 max = new Vector2(350, 432);
-
-            Vector2 rightOffset = new Vector2(350, 0);
-
-            if (!left) {
-                min += rightOffset;
-                max += rightOffset;
-            }
-
-            Random rand = new Random();
-
-            int offFieldOffset = 0;
-
-            foreach (TeamMember m in Members) {
-                if (m.OnField) {
-                    float posX = (float)rand.NextDouble();
-                    posX *= (max.X - min.X);
-                    posX += min.X;
-
-                    float posY = (float)rand.NextDouble();
-                    posY *= (max.Y - min.Y);
-                    posY += min.Y;
-
-                    m.Position = new Vector2(posX, posY);
-                } else {
-                    m.Position = new Vector2(min.X + offFieldOffset * 5, min.Y - 10);
-                }
-            }
+            ai.SetupKickoff();
         }
 
 

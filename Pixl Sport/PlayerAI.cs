@@ -88,6 +88,9 @@ namespace Pixl_Sport
                 case TeamAI.Instruction.AcquireBall:
                     selectActionForAcquireBall();
                     break;
+                case TeamAI.Instruction.DefendArea:
+                    selectActionForDefendArea();
+                    break;
                 case TeamAI.Instruction.GetOpen:
                     action = Action.Wait;
                     break;
@@ -105,11 +108,25 @@ namespace Pixl_Sport
             actionBall = instructionBall;
         }
 
+        private void selectActionForDefendArea()
+        {
+            if (player.Position == actionPosition) {
+                /* GOT IT! */
+                action = Action.Wait;
+            }
+
+            action = Action.MoveToPosition;
+            actionPosition = instructionPosition;
+        }
+
         private void performAction(GameTime t)
         {
             switch (action) {
                 case Action.MoveToBall:
                     performMoveToBall();
+                    break;
+                case Action.MoveToPosition:
+                    performMoveToPosition();
                     break;
                 case Action.NoAction:
                 case Action.Wait:
@@ -129,6 +146,35 @@ namespace Pixl_Sport
 
             /* Get Vector between us and ball! */
             Vector2 direction = actionBall.Position - player.Position;
+
+            if (direction.LengthSquared() < TeamMember.PLAYER_SPEED * TeamMember.PLAYER_SPEED) {
+                player.Position = actionBall.Position;
+                return;
+            }
+
+            direction.Normalize();
+
+            direction *= TeamMember.PLAYER_SPEED;
+
+            player.Position += direction;
+        }
+
+        private void performMoveToPosition()
+        {
+            if (player.Position == actionPosition) {
+                /* ACTION ACCOMPLISHED! */
+                action = Action.Wait;
+                return;
+            }
+
+            /* Get Vector between us and ball! */
+            Vector2 direction = actionPosition - player.Position;
+
+            if (direction.LengthSquared() < TeamMember.PLAYER_SPEED * TeamMember.PLAYER_SPEED) {
+                player.Position = actionPosition;
+                return;
+            }
+
             direction.Normalize();
 
             direction *= TeamMember.PLAYER_SPEED;
