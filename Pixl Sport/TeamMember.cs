@@ -78,7 +78,7 @@ namespace Pixl_Sport
         {
 
             if (!PlayerControlled) {
-           //     ai.Update(t);
+                ai.Update(t);
             }
 
             trackMovingAverage();
