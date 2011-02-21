@@ -89,7 +89,7 @@ namespace Pixl_Sport
             rulesList.Add(new OutTheBackGoal(this, new ScoreChange(this, 3)));
 
 
-            rulesList.Add(new HotPotato(this, new Explosion()));
+            rulesList.Add(new HotPotato(this,  new LightOnFire(Judgement.JudgementType.TeamMember)));
 
             rulesList.Add(new OutOfBounds( this, new LightOnFire(Judgement.JudgementType.TeamMember)));
             players.Add(new Player(Team1));
@@ -147,16 +147,18 @@ namespace Pixl_Sport
             }
             Team1.Update(T);
             Team2.Update(T);
-            if(Ball.State != Ball.BallState.Held) foreach (TeamMember TM in Team1.Members)
-            {
-                if(Ball.Bounds.Intersects(TM.Bounds)&& Ball.State != Ball.BallState.Held && !TM.Equals(Ball.Possessor)) TM.GrabBall(Ball);
+             foreach (TeamMember TM in Team1.Members)
+             {
+                 if (TM.Tackling) foreach (TeamMember V in Team2.Members) if (TM.Bounds.Intersects(V.Bounds)) TM.Hit(V);
+                if(Ball.Bounds.Intersects(TM.Bounds)&& Ball.State != Ball.BallState.Held && !TM.Equals(Ball.Possessor) &&!Ball.HotBall) TM.GrabBall(Ball);
                 
             }
-          if (Ball.State != Ball.BallState.Held) foreach (TeamMember TM in Team2.Members)
-                {
-                    if (Ball.Bounds.Intersects(TM.Bounds) && Ball.State != Ball.BallState.Held && !TM.Equals(Ball.Possessor)) TM.GrabBall(Ball);
+       /*  foreach (TeamMember TM in Team2.Members)
+         {
+             if (TM.Tackling) foreach (TeamMember V in Team1.Members) if (TM.Bounds.Intersects(V.Bounds)) TM.Hit(V);
+             if (Ball.Bounds.Intersects(TM.Bounds) && Ball.State != Ball.BallState.Held && !TM.Equals(Ball.Possessor) && !Ball.HotBall) TM.GrabBall(Ball);
 
-                }
+         }*/
 
             Ball.Update(T);
             RulesCheck();

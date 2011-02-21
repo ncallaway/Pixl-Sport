@@ -22,14 +22,31 @@ namespace Pixl_Sport
         public int Number { get { return number; } set { number = Math.Abs(value % 100); } }
 
         private Team.Position profession;
-        public Team.Position Profession { get { return profession; } set { profession = value; } }
+        public Team.Position Profession { get { return Profession; } set { profession = value; } }
 
         public bool OnField;
         public bool IsOnFire;
+        private float cantCatch;
+        private float catchTimer;
+        public bool CantCatch { get { return cantCatch >catchTimer ; } set { catchTimer = 0; cantCatch = 500f; } }
 
 
         private int numPositionAvgFrames;
         private Vector2 windowVelocity;
+
+
+
+
+
+        private bool tackling;
+        public bool Tackling {get {return tackling;}}
+        private Vector2 tacklingDirection;
+        private float tackleTimer;
+        private float tackleMove = 100f;
+        private float tackleRest = 300f;
+
+        
+
 
 
         public float TimeWithBall;
@@ -51,7 +68,7 @@ namespace Pixl_Sport
         public Team Team { get { return team; } }
 
 
-        public bool HasBall = false;
+        public bool HasBall {get { return HeldBall!=null;}}
         public bool PlayerControlled = false;
 
         public Ball HeldBall;
@@ -66,11 +83,10 @@ namespace Pixl_Sport
         {
             this.team = team;
             ai = new PlayerAI(this);
-            passStrength = 10;
-            passAccuracy = 10;
+            passStrength = 5;
+            passAccuracy = 5;
             TimeWithBall = 0f;
             numPositionAvgFrames = 0;
-            profession = Team.Position.Decimator;
         }
 
         public void Draw(SpriteBatch batch, Texture2D pixels, Vector2 fieldOrigin, uint scaleSize)
@@ -85,10 +101,19 @@ namespace Pixl_Sport
 
         public void Update(GameTime t)
         {
-           
+            if (CantCatch) catchTimer += t.ElapsedGameTime.Milliseconds;
+
+
+            if (tackling){
+                
+            if(tackleTimer < tackleMove)    position += 2* tacklingDirection;
+            if(tackleTimer< tackleRest) tackleTimer += t.ElapsedGameTime.Milliseconds;
+            else tackling = false;
+            
+            
+            }
             if (!PlayerControlled) {
-           //     ai.Update(t);
-                ai.Update(t);
+              ai.Update(t);
             }
 
             trackMovingAverage();
@@ -99,6 +124,11 @@ namespace Pixl_Sport
                 HeldBall.Position = new Vector2(position.X, position.Y - 2);
             }
             prevPosition = this.Position;
+        }
+
+        public void Stun(int time)
+        {
+            ai.Stun(new TimeSpan(0, 0, 0, 0, time));
         }
 
         private void trackMovingAverage()
@@ -134,10 +164,30 @@ namespace Pixl_Sport
             target += new Vector2((float)Math.Cos(deviation)/passAccuracy, (float)Math.Sin(deviation)/passAccuracy);
 
 
-            HeldBall.SendFlying(target,(float) passStrength / 7.5f, (float) passStrength / 10f);
-            HasBall = false;
+            HeldBall.SendFlying(target,(float) passStrength / 3f, (float) passStrength / 20f);
+           
             HeldBall = null;
+            CantCatch = true;
         }
+
+        public void Drop()
+        {
+            Random rand = new Random();
+            int deviation = 0;
+
+            deviation = (int)(rand.NextDouble() * 360) % 360;
+
+
+
+            Vector2 target = new Vector2((float)Math.Cos(deviation), (float)Math.Sin(deviation));
+
+
+            HeldBall.SendFlying(target, .2f , .1f);
+            
+            HeldBall = null;
+            CantCatch = true;
+        }
+
 
         public void Kick(Vector2 target)
         {
@@ -148,22 +198,44 @@ namespace Pixl_Sport
           
             target += new Vector2((float)Math.Cos(deviation)/(passAccuracy/3), (float)Math.Sin(deviation)/(passAccuracy/3));
 
-            HeldBall.SendFlying(target, passStrength / 5, passStrength/5);
-            HasBall = false;
+            HeldBall.SendFlying(target, passStrength /2, passStrength/8f);
+            
             HeldBall = null;
+            CantCatch = true;
         }
 
 
         public void GrabBall(Ball ball)
         {
-            HeldBall = ball;
-            HasBall = true;
+            if (!CantCatch)
+            {
+                HeldBall = ball;
+                
 
-            TimeWithBall = 0f;
-            ball.Possessor = this;
-            ball.State = Ball.BallState.Held;
+                TimeWithBall = 0f;
+                ball.Possessor = this;
+                ball.State = Ball.BallState.Held;
+            }
         }
 
+        public void Tackle(Vector2 tacklingDirection)
+        {
+            tackleTimer = 0f;
+            tackling = true;
+            tacklingDirection.Normalize();
+            position += 2 * tacklingDirection;
+
+
+        }
+
+        public void Hit(TeamMember victim)
+        {
+            victim.ai.Stun(new TimeSpan(0,0,0,0,2000));
+            if (victim.HeldBall != null)
+            {
+                victim.Drop();
+            }
+        }
 
 
 

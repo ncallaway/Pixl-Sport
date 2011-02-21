@@ -86,7 +86,7 @@
   <ItemGroup>
     <Compile Include="AI\DefensivePost.cs" />
     <Compile Include="Ball.cs" />
-    <Compile Include="HotPotato.cs" />
+    <Compile Include="RulesFolder\HotPotato.cs" />
     <Compile Include="JudgementsFolder\Explosion.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="GameManager.cs" />

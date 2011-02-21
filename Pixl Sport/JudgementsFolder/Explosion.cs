@@ -19,9 +19,9 @@ namespace Pixl_Sport
   public override void Execute(TeamMember TM)
   {   Random rand = new Random();
       int degree = (int)rand.NextDouble()*360%360;
-      TM.HeldBall.h = 5f;
-      TM.HeldBall.SendFlying(new Vector2((float)Math.Cos(degree), (float)Math.Sin(degree)), .5f, 2f);
-      TM.Team.Members.Remove(TM);
+      TM.HeldBall.HotBall = true;
+      TM.HeldBall.SendFlying(new Vector2((float)Math.Cos(degree), (float)Math.Sin(degree)), .05f, 1f);
+      TM.Stun(5000);
   
   
   }

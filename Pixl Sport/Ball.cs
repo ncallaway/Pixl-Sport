@@ -15,12 +15,16 @@ namespace Pixl_Sport
         private Vector2 position;
         public Vector2 Position { get { return position; } set { position = value; } }
         private float height;
-        private float arcApex;
+       
         private bool apexReached;
         private float verticalForce;
 
         public float h;
         public float Height { get { return h; } set { h = value; } }
+
+        private float hotTimer;
+        private float hotTime;
+        public bool HotBall { get { return hotTime < hotTimer; } set { hotTime = 0; hotTimer = 500f; } }
 
 
         public BoundingBox Bounds
@@ -42,7 +46,8 @@ namespace Pixl_Sport
             Held,
             Flying,
             Bouncing,
-            Dead
+            Dead,
+            
 
 
         }
@@ -53,10 +58,10 @@ namespace Pixl_Sport
         public Ball()
         {
             apexReached = false;
-            height = 0f;
-            h = 1f;
-            velocity = .5f;
-            arcApex = 20f;
+            height = 20f;
+            h = 20f;
+            velocity = -2f;
+            
             Bounce();
         }
 
@@ -65,7 +70,7 @@ namespace Pixl_Sport
         public void Draw(SpriteBatch batch, Texture2D pixels, Vector2 fieldOrigin, uint scaleSize)
         {
             Vector2 drawLocation = (fieldOrigin + position) * scaleSize;
-            Rectangle destination = new Rectangle((int)drawLocation.X, (int)drawLocation.Y, 2 * (int)scaleSize* (int) (h /10 +1), 2 * (int)scaleSize *(int) (h /10+1));
+            Rectangle destination = new Rectangle((int)drawLocation.X, (int)drawLocation.Y, 2 * (int)scaleSize* (int) (h /5 +1), 2 * (int)scaleSize *(int) (h /5+1));
 
             batch.Draw(pixels, destination, COLOR_BALL);
         }
@@ -73,28 +78,36 @@ namespace Pixl_Sport
 
         public void Update ( GameTime t)
         {
-           
+            hotTime += t.ElapsedGameTime.Milliseconds;
             h = Math.Max(h, 0);
 
             
+
+
+
             switch (State){
                 case BallState.Flying:
-                    verticalForce -= .05f;
+                    verticalForce -= .01f;
                     h += verticalForce;
                     position += direction*velocity;
                     if (h < 0f) Bounce();
 
 
 
+
+
                     break;
+
                 case BallState.Held:
                     break;
                 case BallState.Bouncing:
                         
                     break;
 
-            
+                    
             }
+
+            h = Math.Max(h, 0);
        }
 
         public void Clear()
@@ -106,10 +119,10 @@ namespace Pixl_Sport
         }
 
 
-        public void SendFlying(Vector2 direction, float strength, float apex)
+        public void SendFlying(Vector2 direction, float Velocity, float verticalF)
         {
-            verticalForce = apex/5f;
-            velocity = strength;
+            verticalForce = verticalF;
+            velocity = Velocity;
             this.direction = direction;
             this.direction.Normalize();
             State = BallState.Flying;
@@ -127,7 +140,7 @@ namespace Pixl_Sport
               verticalForce = Math.Abs(verticalForce / 5f);
               direction += new Vector2((float)Math.Cos(deviation), (float)Math.Sin(deviation));
               direction.Normalize();
-              SendFlying(direction, velocity / 2f, arcApex / 2f);
+              SendFlying(direction, velocity / 2f, verticalForce);
         }
 
     }

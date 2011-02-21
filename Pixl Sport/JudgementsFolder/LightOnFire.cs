@@ -42,7 +42,9 @@ namespace Pixl_Sport
         
         public override void Execute(TeamMember TM) 
         {
-            TM.IsOnFire = true;  
+            TM.CantCatch = true;
+            TM.IsOnFire = true;
+            TM.Drop();
         
         }
 
