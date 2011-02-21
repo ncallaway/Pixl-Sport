@@ -80,17 +80,20 @@ namespace Pixl_Sport
 
             SetupKickoff();
 
+            rulesList.Add(new OutOfBounds(this, new LightOnFire(Judgement.JudgementType.TeamMember)));
             rulesList.Add(new OutOfBounds(this, new ScoreChange(this, -4)));
+            rulesList.Add(new OutOfBounds(this, new LightOnFire(Judgement.JudgementType.TeamMember)));
 
 
             rulesList.Add(new RunInGoal(this, new ScoreChange(this, 5)));
             rulesList.Add(new OutTheBackGoal(this, new ScoreChange(this, 3)));
 
 
-            
+            rulesList.Add(new HotPotato(this, new Explosion()));
 
-            rulesList.Add(new OutOfBounds( this, new LightOnFire(Judgement.JudgementType.Team)));
+            rulesList.Add(new OutOfBounds( this, new LightOnFire(Judgement.JudgementType.TeamMember)));
             players.Add(new Player(Team1));
+            players.Add(new Player(Team2, InputController.InputMode.Player2));
         }
 
         
@@ -146,12 +149,12 @@ namespace Pixl_Sport
             Team2.Update(T);
             if(Ball.State != Ball.BallState.Held) foreach (TeamMember TM in Team1.Members)
             {
-                if(Ball.Bounds.Intersects(TM.Bounds)&& Ball.State != Ball.BallState.Held) TM.GrabBall(Ball);
+                if(Ball.Bounds.Intersects(TM.Bounds)&& Ball.State != Ball.BallState.Held && !TM.Equals(Ball.Possessor)) TM.GrabBall(Ball);
                 
             }
-            if (Ball.State != Ball.BallState.Held) foreach (TeamMember TM in Team2.Members)
+          if (Ball.State != Ball.BallState.Held) foreach (TeamMember TM in Team2.Members)
                 {
-                    if (Ball.Bounds.Intersects(TM.Bounds) && Ball.State != Ball.BallState.Held) TM.GrabBall(Ball);
+                    if (Ball.Bounds.Intersects(TM.Bounds) && Ball.State != Ball.BallState.Held && !TM.Equals(Ball.Possessor)) TM.GrabBall(Ball);
 
                 }
 

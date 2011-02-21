@@ -42,7 +42,7 @@ namespace Pixl_Sport
         
         public override void Execute(TeamMember TM) 
         {
-            //TM.IsONFIRE!!!!   
+            TM.IsOnFire = true;  
         
         }
 
@@ -51,7 +51,7 @@ namespace Pixl_Sport
         {
             foreach (TeamMember TM in T.Members)
             {
-                //TM.IsONFIRE!!!!
+                TM.IsOnFire = true;
 
             }
 

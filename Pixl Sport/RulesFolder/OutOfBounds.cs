@@ -25,41 +25,13 @@ namespace Pixl_Sport
         {
           
 
-
-
-            //These will be replaced with the field dimensions provided for later.
-
-
-            int fieldMinX = 0 ;
-            int fieldMinY = 0;
-            int fieldMaxX = 100;
-            int fieldMaxY = 100;
-
-
-            // End of PlaceHolder Variables
-
-            if(manager.Ball.Possessor != null)  if ((manager.Ball.Position.Y < 0 || manager.Ball.Position.Y > 432)) Enforce(manager.Ball.Possessor.Team, null);
+            if(manager.Ball.Possessor != null)  if ((manager.Ball.Position.Y < 0 || manager.Ball.Position.Y > 432)) Enforce(manager.Ball.Possessor.Team, manager.Ball.Possessor);
 
 
 
         }
 
-        public override void Enforce(Team T, TeamMember TM)
-        {
-             switch(assignedJudgement.Judged){
-                 case Judgement.JudgementType.Team:
-                     assignedJudgement.Execute(T);
-                         break;
-                 case Judgement.JudgementType.TeamMember:
-                         assignedJudgement.Execute(TM);
-                         break;
-
-                     }
-
-            ///RAWR~!!!!!!
-
-
-        }
+  
 
 
 

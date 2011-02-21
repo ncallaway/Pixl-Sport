@@ -17,8 +17,10 @@ namespace Pixl_Sport
         private float height;
         private float arcApex;
         private bool apexReached;
+        private float verticalForce;
 
-        private float h;
+        public float h;
+        public float Height { get { return h; } set { h = value; } }
 
 
         public BoundingBox Bounds
@@ -63,7 +65,7 @@ namespace Pixl_Sport
         public void Draw(SpriteBatch batch, Texture2D pixels, Vector2 fieldOrigin, uint scaleSize)
         {
             Vector2 drawLocation = (fieldOrigin + position) * scaleSize;
-            Rectangle destination = new Rectangle((int)drawLocation.X, (int)drawLocation.Y, 2 * (int)scaleSize* (int) (h /5 +1), 2 * (int)scaleSize *(int) (h /5+1));
+            Rectangle destination = new Rectangle((int)drawLocation.X, (int)drawLocation.Y, 2 * (int)scaleSize* (int) (h /10 +1), 2 * (int)scaleSize *(int) (h /10+1));
 
             batch.Draw(pixels, destination, COLOR_BALL);
         }
@@ -71,17 +73,16 @@ namespace Pixl_Sport
 
         public void Update ( GameTime t)
         {
-            h -= .1f;
+           
             h = Math.Max(h, 0);
 
             
             switch (State){
                 case BallState.Flying:
-
+                    verticalForce -= .05f;
+                    h += verticalForce;
                     position += direction*velocity;
-                    if (!apexReached) h+=.3f;
-                    if (h > arcApex) apexReached = true;
-                    if (h < .2f) Bounce();
+                    if (h < 0f) Bounce();
 
 
 
@@ -100,35 +101,33 @@ namespace Pixl_Sport
         {
             direction = Vector2.Zero;
             apexReached = true;
-            height = 20f;
+            height = 3f;
 
         }
 
 
-        public void SendFlying(Vector2 direction,float strength, float apex)
+        public void SendFlying(Vector2 direction, float strength, float apex)
         {
-            apexReached = false;
-            h = 2.1f;
-            arcApex = apex;
+            verticalForce = apex/5f;
             velocity = strength;
             this.direction = direction;
             this.direction.Normalize();
-
-            
-
             State = BallState.Flying;
         }
+
+        
+
 
         public void Bounce()
         {
             Random rand = new Random();
             int deviation = 0;
           
-              deviation = (int)(rand.NextDouble() * 120) % 30 - 15;
-              
-              direction = new Vector2((float)Math.Cos(deviation), (float)Math.Sin(deviation));
+              deviation = (int)(rand.NextDouble() * 270) % 270 - 135;
+              verticalForce = Math.Abs(verticalForce / 5f);
+              direction += new Vector2((float)Math.Cos(deviation), (float)Math.Sin(deviation));
               direction.Normalize();
-              SendFlying(direction, velocity / 2, arcApex / 2);
+              SendFlying(direction, velocity / 2f, arcApex / 2f);
         }
 
     }

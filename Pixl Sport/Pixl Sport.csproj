@@ -85,6 +85,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ball.cs" />
+    <Compile Include="HotPotato.cs" />
+    <Compile Include="JudgementsFolder\Explosion.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="GameManager.cs" />
     <Compile Include="InputController.cs" />

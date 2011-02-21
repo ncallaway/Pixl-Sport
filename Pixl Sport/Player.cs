@@ -39,6 +39,14 @@ namespace Pixl_Sport
 
         }
 
+        public Player(Team team, InputController.InputMode Input)
+        {
+            input = new InputController(InputController.InputMode.Player2);
+            this.team = team;
+            CurrentCharacter = team.Members.ElementAt(0);
+
+        }
+
 
         public void Update(GameTime t)
         {
