@@ -23,7 +23,7 @@ namespace Pixl_Sport
 
         public override void Check()
         {
-            if (manager.Ball.Position.Y < 300) Enforce(manager.Ball.Possessor.Team, manager.Ball.Possessor);
+          
 
 
 
@@ -38,16 +38,7 @@ namespace Pixl_Sport
 
             // End of PlaceHolder Variables
 
-
-            foreach (Team T in manager.BothTeams)
-            {
-                foreach (TeamMember TM in T.Members) if (TM.Position.X < fieldMinX || TM.Position.X > fieldMaxX || TM.Position.Y < fieldMinY || TM.Position.Y > fieldMaxY)
-                    {
-                        Enforce(T, TM);
-
-                    }
-                
-            }
+            if(manager.Ball.Possessor != null)  if ((manager.Ball.Position.Y < 0 || manager.Ball.Position.Y > 432)) Enforce(manager.Ball.Possessor.Team, null);
 
 
 
@@ -55,8 +46,6 @@ namespace Pixl_Sport
 
         public override void Enforce(Team T, TeamMember TM)
         {
-            manager.StopClock();
-            
              switch(assignedJudgement.Judged){
                  case Judgement.JudgementType.Team:
                      assignedJudgement.Execute(T);

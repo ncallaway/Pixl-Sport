@@ -11,6 +11,8 @@ namespace Pixl_Sport
 {
     class TeamMember
     {
+        public const float PLAYER_SPEED = 1f;
+
         private String name;
         public String Name { get { return name; } }
 
@@ -22,8 +24,14 @@ namespace Pixl_Sport
 
         public bool OnField;
 
+        private int numPositionAvgFrames;
+        private Vector2 windowVelocity;
+
+        private Vector2 prevPosition;
         private Vector2 position;
+
         public Vector2 Position { get { return position; } set { position = value; } }
+        public Vector2 Velocity { get { return windowVelocity / numPositionAvgFrames; } }
 
         public BoundingBox Bounds {
             get {
@@ -44,15 +52,17 @@ namespace Pixl_Sport
         private int passStrength;
         private int passAccuracy;
 
-
-
-
+        private PlayerAI ai;
+        public PlayerAI AI { get { return ai; } }
 
         public TeamMember(Team team)
         {
             this.team = team;
+            ai = new PlayerAI(this);
             passStrength = 10;
             passAccuracy = 10;
+
+            numPositionAvgFrames = 0;
         }
 
         public void Draw(SpriteBatch batch, Texture2D pixels, Vector2 fieldOrigin, uint scaleSize)
@@ -65,11 +75,32 @@ namespace Pixl_Sport
 
         public void Update(GameTime t)
         {
-            
-            if(!PlayerControlled) PlayerControlled = false;   /// PlaceMarker for AI Calls!
+
+            if (!PlayerControlled) {
+           //     ai.Update(t);
+            }
+
+            trackMovingAverage();
 
             if (HasBall) HeldBall.Position = new Vector2(position.X, position.Y - 2);
-         }
+
+            prevPosition = this.Position;
+        }
+
+        private void trackMovingAverage()
+        {
+            const int WINDOW_AVG_SIZE = 10;
+
+            Vector2 delta = Position - prevPosition;
+
+            if (numPositionAvgFrames < WINDOW_AVG_SIZE) {
+                windowVelocity += delta;
+                numPositionAvgFrames++;
+            } else {
+                windowVelocity -= (windowVelocity / numPositionAvgFrames);
+                windowVelocity += delta;
+            }
+        }
 
         public void Pass(TeamMember TM)
         {
@@ -78,11 +109,36 @@ namespace Pixl_Sport
 
 
         public void Pass(Vector2 target)
-        {   
-            HeldBall.SendFlying(target, passStrength/5, passStrength/3);
+        {
+            Random rand = new Random();
+            int deviation = 0;
+           
+                deviation = (int)(rand.NextDouble() * 30) % 30 - 15;
+            
+            deviation /= passAccuracy;
+
+            target += new Vector2((float)Math.Cos(deviation), (float)Math.Sin(deviation));
+
+
+                HeldBall.SendFlying(target, passStrength / 5, passStrength / 2);
             HasBall = false;
             HeldBall = null;
         }
+
+        public void Kick(Vector2 target)
+        {
+            Random rand = new Random();
+            int deviation = 0;
+            deviation += (int)(rand.NextDouble() * 30) % 30 - 15;
+            
+            deviation /= (passAccuracy / 3);
+            target += new Vector2((float)Math.Cos(deviation), (float)Math.Sin(deviation));
+
+            HeldBall.SendFlying(target, passStrength / 5, passStrength*2);
+            HasBall = false;
+            HeldBall = null;
+        }
+
 
         public void GrabBall(Ball ball)
         {

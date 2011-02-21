@@ -16,7 +16,11 @@ namespace Pixl_Sport
 
         public override void Check()
         {
-
+            if (manager.Ball.State == Ball.BallState.Held)
+            {
+                if (manager.Ball.Position.X < 50) Enforce(manager.Team2, null);
+                if (manager.Ball.Position.X > 650) Enforce(manager.Team1, null);
+            }
         }
         
 
@@ -33,7 +37,9 @@ namespace Pixl_Sport
 
         public override void Check()
         {
-
+            if (manager.Ball.Position.X <= 0 && manager.Ball.Position.Y > 176 && manager.Ball.Position.Y < 256) Enforce(manager.Team2, manager.Ball.Possessor);
+            if (manager.Ball.Position.X >= 700 && manager.Ball.Position.Y > 176 && manager.Ball.Position.Y < 256) Enforce(manager.Team1, manager.Ball.Possessor);
+       
         }
 
 

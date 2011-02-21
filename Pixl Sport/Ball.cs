@@ -77,17 +77,19 @@ namespace Pixl_Sport
             
             switch (State){
                 case BallState.Flying:
+
                     position += direction*velocity;
                     if (!apexReached) h+=.3f;
                     if (h > arcApex) apexReached = true;
                     if (h < .2f) Bounce();
 
 
+
                     break;
                 case BallState.Held:
                     break;
                 case BallState.Bouncing:
-                              
+                        
                     break;
 
             
@@ -97,8 +99,8 @@ namespace Pixl_Sport
         public void Clear()
         {
             direction = Vector2.Zero;
-            apexReached = false;
-            height = .2f;
+            apexReached = true;
+            height = 20f;
 
         }
 
@@ -118,10 +120,13 @@ namespace Pixl_Sport
         }
 
         public void Bounce()
-        {     
-              Random rand = new Random();
-              int degree = (int) (Math.Ceiling(rand.NextDouble()*10000) % 360);
-              direction = new Vector2((float)Math.Cos(degree), (float)Math.Sin(degree));
+        {
+            Random rand = new Random();
+            int deviation = 0;
+          
+              deviation = (int)(rand.NextDouble() * 120) % 30 - 15;
+              
+              direction = new Vector2((float)Math.Cos(deviation), (float)Math.Sin(deviation));
               direction.Normalize();
               SendFlying(direction, velocity / 2, arcApex / 2);
         }

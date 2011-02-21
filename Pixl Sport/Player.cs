@@ -16,7 +16,18 @@ namespace Pixl_Sport
 
        
         private Team team;
-        public TeamMember CurrentCharacter;
+        private TeamMember currentCharacter;
+        public TeamMember CurrentCharacter { get { return currentCharacter; }
+            set {
+                if (currentCharacter != null) {
+                    currentCharacter.PlayerControlled = false;
+                }
+                currentCharacter = value;
+                if (currentCharacter != null) {
+                    currentCharacter.PlayerControlled = true;
+                }
+            } 
+        }
 
         
 
@@ -33,8 +44,8 @@ namespace Pixl_Sport
         {
            if (!CurrentCharacter.HasBall) foreach (TeamMember TM in team.Members) if(TM.HasBall) CurrentCharacter = TM;
             input.Update();
-            if (CurrentCharacter.HasBall && input.RStickPosition().Length() >= .5) CurrentCharacter.Pass(input.RStickPosition());
-            CurrentCharacter.Position += input.LStickPosition();
+            if (CurrentCharacter.HasBall && input.RStickPosition().Length() >= .5) if (input.IsFirePressed()) CurrentCharacter.Kick(input.RStickPosition()); else CurrentCharacter.Pass(input.RStickPosition());
+            CurrentCharacter.Position += input.LStickPosition() * TeamMember.PLAYER_SPEED;
 
         }
 
