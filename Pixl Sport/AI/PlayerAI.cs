@@ -40,7 +40,7 @@ namespace Pixl_Sport.AI
         public PlayerAI(TeamMember player)
         {
             this.player = player;
-            instruction = TeamAI.Instruction.GetOpen;
+            instruction = TeamAI.Instruction.None;
             action = Action.NoAction;
 
             parentAi = player.Team.AI;
@@ -59,7 +59,6 @@ namespace Pixl_Sport.AI
         private TeamMember instructionTeamMember;
 
         
-
         public Ball InstructionBall { get { return instructionBall; } set {
             if (instructionBall != value) {
                 action = Action.NoAction;
@@ -136,6 +135,12 @@ namespace Pixl_Sport.AI
                     selectActionForDefendClosestPlayer();
                     break;
                 case TeamAI.Instruction.GetOpen:
+                    selectActionForGetOpen();
+                    break;
+                case TeamAI.Instruction.GetOpenNoInfo:
+                    selectActionForGetOpenNoInfo();
+                    break;
+                default:
                     action = Action.Wait;
                     break;
             }
@@ -171,6 +176,26 @@ namespace Pixl_Sport.AI
 
             action = Action.DefendPlayer;
             actionTeamMember = closest;
+        }
+
+        private void selectActionForGetOpen()
+        {
+            action = Action.MoveToPosition;
+            actionPosition = instructionPosition;
+        }
+
+        private void selectActionForGetOpenNoInfo()
+        {
+            float ballDistance = Vector2.Distance(player.Position, parentAi.Team.Manager.Ball.Position);
+
+            if (ballDistance < 50f) {
+                action = Action.CreateClearLineBetweenBall;
+                actionBall = parentAi.Team.Manager.Ball;
+                return;
+            }
+
+            action = Action.MoveToBall;
+            actionBall = parentAi.Team.Manager.Ball;
         }
 
         private void selectActionForDefendArea()
