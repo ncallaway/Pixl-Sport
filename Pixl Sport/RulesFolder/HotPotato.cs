@@ -21,7 +21,11 @@ namespace Pixl_Sport
         {
             if (manager.Ball.Possessor != null)
             {
-                if (manager.Ball.Possessor.TimeWithBall > timeLimit) Enforce(manager.Ball.Possessor.Team, manager.Ball.Possessor);
+                if (manager.Ball.Possessor.TimeWithBall > timeLimit)
+                {
+                    manager.Ball.Possessor.HeldBall = manager.Ball;
+                    Enforce(manager.Ball.Possessor.Team, manager.Ball.Possessor);
+                }
             }
 
 

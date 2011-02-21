@@ -24,8 +24,6 @@ namespace Pixl_Sport
          public virtual void Enforce(Team T, TeamMember TM)
          {
 
-             manager.StopClock();
-
              switch (assignedJudgement.Judged)
              {
                  case Judgement.JudgementType.Team:

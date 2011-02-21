@@ -18,6 +18,7 @@ namespace Pixl_Sport
        
         private bool apexReached;
         private float verticalForce;
+        public float VerticalF { get { return verticalForce; } }
 
         public float h;
         public float Height { get { return h; } set { h = value; } }
@@ -40,6 +41,7 @@ namespace Pixl_Sport
 
 
         private float velocity;
+        public float Velocity { get { return velocity; } }
 
         public enum BallState
         {
@@ -115,6 +117,7 @@ namespace Pixl_Sport
             direction = Vector2.Zero;
             apexReached = true;
             height = 3f;
+            Possessor = null;
 
         }
 

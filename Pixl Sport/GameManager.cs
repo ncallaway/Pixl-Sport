@@ -14,6 +14,9 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
 
+using Pixl_Sport.RulesFolder;
+using Pixl_Sport.JudgementsFolder;
+
 namespace Pixl_Sport
 {
 
@@ -81,18 +84,13 @@ namespace Pixl_Sport
             SetupKickoff();
 
             rulesList.Add(new OutOfBounds(this, new LightOnFire(Judgement.JudgementType.TeamMember)));
-            rulesList.Add(new OutOfBounds(this, new ScoreChange(this, -4)));
-            rulesList.Add(new OutOfBounds(this, new LightOnFire(Judgement.JudgementType.TeamMember)));
-
-
+            rulesList.Add(new OutOfBounds(this, new Rebound(this)));
             rulesList.Add(new RunInGoal(this, new ScoreChange(this, 5)));
-            rulesList.Add(new OutTheBackGoal(this, new ScoreChange(this, 3)));
+            rulesList.Add(new ThroughThePostsGoal(this, new ScoreChange(this, 7)));
+            rulesList.Add(new OutTheBackGoal(this, new Rebound(this)));
+            rulesList.Add(new BallHotPotato(this,  new BigExplosion(), 10));
 
-
-            rulesList.Add(new HotPotato(this,  new LightOnFire(Judgement.JudgementType.TeamMember)));
-
-            rulesList.Add(new OutOfBounds( this, new LightOnFire(Judgement.JudgementType.TeamMember)));
-            players.Add(new Player(Team1));
+             players.Add(new Player(Team1));
             players.Add(new Player(Team2, InputController.InputMode.Player2));
         }
 
@@ -129,7 +127,8 @@ namespace Pixl_Sport
 
         public void Update(GameTime T)
         {
-            if (running) Time = T.ElapsedGameTime.Milliseconds;
+            if (running) 
+            Time = T.ElapsedGameTime.Milliseconds;
 
             TimeSpan remaining = new TimeSpan(0, MinTime, SecTime);
 

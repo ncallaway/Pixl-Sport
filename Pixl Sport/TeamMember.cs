@@ -59,7 +59,7 @@ namespace Pixl_Sport
 
         public BoundingBox Bounds {
             get {
-                return new BoundingBox(new Vector3(position- Vector2.One, 0f), new Vector3(position + 2*Vector2.One, 2f));
+                return new BoundingBox(new Vector3(position- 2*Vector2.One, 0f), new Vector3(position + 3*Vector2.One, 2f));
             } 
         }
 
@@ -109,7 +109,7 @@ namespace Pixl_Sport
             {
                 tackleTimer += t.ElapsedGameTime.Milliseconds;
 
-                if (tackleTimer < tackleMove) position += 3 * tacklingDirection * TeamMember.PLAYER_SPEED;
+                if (tackleTimer < tackleMove) UpdatePosition( 3 * tacklingDirection * TeamMember.PLAYER_SPEED);
             }
             else
             {
@@ -119,7 +119,7 @@ namespace Pixl_Sport
 
                 if (!PlayerControlled)
                 {
-                     ai.Update(t);
+                    ai.Update(t);
                 }
 
                 trackMovingAverage();
@@ -179,6 +179,24 @@ namespace Pixl_Sport
             CantCatch = true;
         }
 
+        public void BallMovement(float velocity, float vertical)
+        {
+            Random rand = new Random();
+            int deviation = 0;
+
+            deviation = (int)(rand.NextDouble() * 360) % 360;
+
+
+
+            Vector2 target = new Vector2((float)Math.Cos(deviation) , (float)Math.Sin(deviation));
+
+
+            HeldBall.SendFlying(target, velocity, vertical);
+
+            HeldBall = null;
+            CantCatch = true;
+        }
+
         public void Drop()
         {
             Random rand = new Random();
@@ -195,6 +213,25 @@ namespace Pixl_Sport
             
             HeldBall = null;
             CantCatch = true;
+        }
+
+        public void UpdatePosition(Vector2 adjustment)
+        {   Team opposing;
+            if (team.Manager.Team1 == team) opposing = team.Manager.Team2;
+            else opposing = team.Manager.Team1;
+            bool legal = true;
+            foreach (TeamMember TM in opposing.Members)
+            {
+                if(OnField&& TM.Bounds.Intersects(new BoundingBox( new Vector3(position + adjustment - Vector2.One, 0), new Vector3(position + adjustment + 2* Vector2.One, 2f)))) legal = false;
+
+            }
+            foreach (TeamMember TM in team.Members)
+            {
+                if (TM!= this && OnField && TM.Bounds.Intersects(new BoundingBox(new Vector3(position + adjustment -   Vector2.One, 0), new Vector3(position + adjustment + 2* Vector2.One, 2f)))) legal = false;
+
+            }
+            if (legal) position +=adjustment;
+
         }
 
 

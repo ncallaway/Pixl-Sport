@@ -306,7 +306,7 @@ namespace Pixl_Sport.AI
                 direction = upDirection;
             }
 
-            player.Position += direction * TeamMember.PLAYER_SPEED;
+            player.UpdatePosition(direction * TeamMember.PLAYER_SPEED);
         }
 
         private void performStunned(GameTime t)
@@ -394,7 +394,7 @@ namespace Pixl_Sport.AI
 
             direction *= TeamMember.PLAYER_SPEED;
 
-            player.Position += direction;
+            player.UpdatePosition (direction);
         }
 
         private void performWait()

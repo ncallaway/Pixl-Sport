@@ -54,7 +54,7 @@ namespace Pixl_Sport
             input.Update();
             if (input.RStickPosition().Length() >= .5 && !CurrentCharacter.Tackling) if (!CurrentCharacter.HasBall) CurrentCharacter.Tackle(input.RStickPosition());
             else if (input.IsFirePressed()) CurrentCharacter.Kick(input.RStickPosition()); else CurrentCharacter.Pass(input.RStickPosition());
-            if(!CurrentCharacter.Tackling) CurrentCharacter.Position += input.LStickPosition() * TeamMember.PLAYER_SPEED;
+            if(!CurrentCharacter.Tackling) CurrentCharacter.UpdatePosition(input.LStickPosition() * TeamMember.PLAYER_SPEED);
             
 
         }

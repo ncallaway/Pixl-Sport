@@ -20,7 +20,9 @@ namespace Pixl_Sport
   {   Random rand = new Random();
       int degree = (int)rand.NextDouble()*360%360;
       TM.HeldBall.HotBall = true;
-      TM.HeldBall.SendFlying(new Vector2((float)Math.Cos(degree), (float)Math.Sin(degree)), .05f, 1f);
+      TM.TimeWithBall = 0;
+      TM.HeldBall.Possessor = null;
+      TM.BallMovement( .5f, 1f);
       TM.Stun(5000);
   
   
