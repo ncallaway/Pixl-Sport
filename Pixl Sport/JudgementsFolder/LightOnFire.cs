@@ -44,7 +44,7 @@ namespace Pixl_Sport
         {
             TM.CantCatch = true;
             TM.IsOnFire = true;
-            TM.Drop();
+            if(TM.HasBall) TM.Drop();
         
         }
 

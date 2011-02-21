@@ -38,8 +38,8 @@ namespace Pixl_Sport
 
 
 
-        private bool tackling;
-        public bool Tackling {get {return tackling;}}
+       
+        public bool Tackling {get {return tackleTimer< tackleRest;}}
         private Vector2 tacklingDirection;
         private float tackleTimer;
         private float tackleMove = 100f;
@@ -87,6 +87,7 @@ namespace Pixl_Sport
             passAccuracy = 5;
             TimeWithBall = 0f;
             numPositionAvgFrames = 0;
+            tackleTimer = 501f;
         }
 
         public void Draw(SpriteBatch batch, Texture2D pixels, Vector2 fieldOrigin, uint scaleSize)
@@ -104,27 +105,35 @@ namespace Pixl_Sport
             if (CantCatch) catchTimer += t.ElapsedGameTime.Milliseconds;
 
 
-            if (tackling){
-                
-            if(tackleTimer < tackleMove)    position += 2* tacklingDirection;
-            if(tackleTimer< tackleRest) tackleTimer += t.ElapsedGameTime.Milliseconds;
-            else tackling = false;
-            
-            
-            }
-            if (!PlayerControlled) {
-              ai.Update(t);
-            }
-
-            trackMovingAverage();
-
-            if (HasBall)
+            if (Tackling)
             {
-                TimeWithBall += t.ElapsedGameTime.Milliseconds;
-                HeldBall.Position = new Vector2(position.X, position.Y - 2);
+                tackleTimer += t.ElapsedGameTime.Milliseconds;
+
+                if (tackleTimer < tackleMove) position += 3 * tacklingDirection * TeamMember.PLAYER_SPEED;
             }
-            prevPosition = this.Position;
+            else
+            {
+
+
+
+
+                if (!PlayerControlled)
+                {
+                     ai.Update(t);
+                }
+
+                trackMovingAverage();
+
+                if (HasBall)
+                {
+                    TimeWithBall += t.ElapsedGameTime.Milliseconds;
+                    HeldBall.Position = new Vector2(position.X, position.Y - 2);
+                }
+                prevPosition = this.Position;
+            }
         }
+            
+        
 
         public void Stun(int time)
         {
@@ -161,7 +170,7 @@ namespace Pixl_Sport
             
            
 
-            target += new Vector2((float)Math.Cos(deviation)/passAccuracy, (float)Math.Sin(deviation)/passAccuracy);
+            target = new Vector2((float)Math.Cos(deviation)/passAccuracy, (float)Math.Sin(deviation)/passAccuracy);
 
 
             HeldBall.SendFlying(target,(float) passStrength / 3f, (float) passStrength / 20f);
@@ -218,12 +227,11 @@ namespace Pixl_Sport
             }
         }
 
-        public void Tackle(Vector2 tacklingDirection)
+        public void Tackle(Vector2 direction)
         {
+            tacklingDirection = direction;
             tackleTimer = 0f;
-            tackling = true;
             tacklingDirection.Normalize();
-            position += 2 * tacklingDirection;
 
 
         }
@@ -231,10 +239,7 @@ namespace Pixl_Sport
         public void Hit(TeamMember victim)
         {
             victim.ai.Stun(new TimeSpan(0,0,0,0,2000));
-            if (victim.HeldBall != null)
-            {
-                victim.Drop();
-            }
+            if (victim.HasBall) victim.Drop();
         }
 
 

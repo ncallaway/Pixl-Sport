@@ -153,12 +153,12 @@ namespace Pixl_Sport
                 if(Ball.Bounds.Intersects(TM.Bounds)&& Ball.State != Ball.BallState.Held && !TM.Equals(Ball.Possessor) &&!Ball.HotBall) TM.GrabBall(Ball);
                 
             }
-       /*  foreach (TeamMember TM in Team2.Members)
+        foreach (TeamMember TM in Team2.Members)
          {
              if (TM.Tackling) foreach (TeamMember V in Team1.Members) if (TM.Bounds.Intersects(V.Bounds)) TM.Hit(V);
              if (Ball.Bounds.Intersects(TM.Bounds) && Ball.State != Ball.BallState.Held && !TM.Equals(Ball.Possessor) && !Ball.HotBall) TM.GrabBall(Ball);
 
-         }*/
+         }
 
             Ball.Update(T);
             RulesCheck();
