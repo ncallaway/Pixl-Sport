@@ -32,6 +32,22 @@ namespace Pixl_Sport.AI
             Neutral,
         }
 
+        private static readonly List<Vector2> HOME_OFF_POSITIONS = new List<Vector2>() { 
+            new Vector2(275, 108),
+            new Vector2(275, 324),
+            new Vector2(200, 216),
+            new Vector2(400, 175),
+            new Vector2(400, 257)
+        };
+
+        private static readonly List<Vector2> AWAY_OFF_POSITIONS = new List<Vector2>() { 
+            new Vector2(275, 108),
+            new Vector2(275, 324),
+            new Vector2(200, 216),
+            new Vector2(400, 175),
+            new Vector2(400, 257)
+        };
+
         private static readonly List<Vector2> HOME_DEF_POSITIONS = new List<Vector2>() { 
             new Vector2(275, 108),
             new Vector2(275, 324),
@@ -48,7 +64,7 @@ namespace Pixl_Sport.AI
             new Vector2(300, 257)
         };
 
-        private Dictionary<TeamMember, DefensivePost> assignments;
+        private Dictionary<TeamMember, Post> assignments;
 
         private static readonly Vector2 HOME_KICKOFF_START = new Vector2(150, 50);
         private static readonly Vector2 HOME_KICKOFF_END = new Vector2(225, 382);
@@ -63,7 +79,7 @@ namespace Pixl_Sport.AI
         private PlayMode mode;
         private PlayMode prevMode;
 
-        private List<DefensivePost> defensivePosts;
+        private List<Post> defensivePosts;
 
         public TeamAI(Team team)
         {
@@ -141,11 +157,11 @@ namespace Pixl_Sport.AI
 
         private void initDefense()
         {
-            assignments = new Dictionary<TeamMember, DefensivePost>();
-            defensivePosts = new List<DefensivePost>();
+            assignments = new Dictionary<TeamMember, Post>();
+            defensivePosts = new List<Post>();
 
             foreach (Vector2 position in Home ? HOME_DEF_POSITIONS : AWAY_DEF_POSITIONS) {
-                DefensivePost p = new DefensivePost();
+                Post p = new Post();
                 p.Assignee = null;
                 p.Position = position;
                 defensivePosts.Add(p);
@@ -167,7 +183,7 @@ namespace Pixl_Sport.AI
 
             List<TeamMember> members = Team.Members;
             HashSet<TeamMember> unassigned = new HashSet<TeamMember>(members);
-            List<DefensivePost> defPosts = SortByProximity(defensivePosts, Team.Manager.Ball.Position);
+            List<Post> defPosts = SortByProximity(defensivePosts, Team.Manager.Ball.Position);
             
 
             List<TeamMember> getters = GetClosestPlayersToPoint(Team.Members, 1, Team.Manager.Ball.Position);
@@ -182,10 +198,10 @@ namespace Pixl_Sport.AI
                 m.AI.Instruction = Instruction.DefendPlayer;
             }
 
-            Dictionary<TeamMember, DefensivePost> mapping = MapPlayersToPosts(members, defPosts);
+            Dictionary<TeamMember, Post> mapping = MapPlayersToPosts(members, defPosts);
 
             float ballThreat = getBrickyBallThreat();
-            foreach (KeyValuePair<TeamMember, DefensivePost> kvp in mapping) {
+            foreach (KeyValuePair<TeamMember, Post> kvp in mapping) {
                 if (unassigned.Contains(kvp.Key)) {
                     unassigned.Remove(kvp.Key);
 
@@ -243,23 +259,23 @@ namespace Pixl_Sport.AI
             return members;
         }
 
-        public static List<DefensivePost> SortByProximity(List<DefensivePost> positions, Vector2 point)
+        public static List<Post> SortByProximity(List<Post> positions, Vector2 point)
         {
-            List<DefensivePost> points = new List<DefensivePost>(positions);
+            List<Post> points = new List<Post>(positions);
 
-            points.Sort(delegate(DefensivePost a, DefensivePost b) {
+            points.Sort(delegate(Post a, Post b) {
                 return Comparer<float>.Default.Compare(Vector2.DistanceSquared(a.Position, point), Vector2.DistanceSquared(b.Position, point));
             });
 
             return points;
         }
 
-        public static Dictionary<TeamMember, DefensivePost> MapPlayersToPosts(List<TeamMember> players, List<DefensivePost> points)
+        public static Dictionary<TeamMember, Post> MapPlayersToPosts(List<TeamMember> players, List<Post> points)
         {
-            Dictionary<TeamMember, DefensivePost> mapping = new Dictionary<TeamMember, DefensivePost>();
+            Dictionary<TeamMember, Post> mapping = new Dictionary<TeamMember, Post>();
 
             List<TeamMember> unassigned = new List<TeamMember>(players);
-            foreach (DefensivePost p in points) {
+            foreach (Post p in points) {
                 if (p.Assignee != null) {
                     TeamMember c = p.Assignee;
                     unassigned.Remove(c);

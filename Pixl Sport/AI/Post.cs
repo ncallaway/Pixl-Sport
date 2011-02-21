@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Pixl_Sport.AI
 {
-    class DefensivePost
+    class Post
     {
         public Vector2 Position;
         public TeamMember Assignee;
