@@ -237,6 +237,22 @@ namespace Pixl_Sport
 
         }
 
+        public bool IsDPadDownNewlyPressed()
+        {
+            switch (m_Mode)
+            {
+                case InputMode.Player1:
+                    bool keyboardNewlyReleased = m_newState.IsKeyUp(Keys.D1) && m_oldState.IsKeyDown(Keys.D1);
+                    bool controllerNewlyReleased = m_newControllerState[0].IsButtonUp(Buttons.DPadDown) && m_oldControllerState[0].IsButtonDown(Buttons.DPadDown);
+                    return keyboardNewlyReleased || controllerNewlyReleased;
+                case InputMode.Player2:
+                    return m_newState.IsKeyUp(Keys.NumPad7) && m_oldState.IsKeyDown(Keys.NumPad7) || m_newControllerState[1].IsButtonUp(Buttons.DPadDown) && m_oldControllerState[1].IsButtonDown(Buttons.DPadDown);
+                default:
+                    throw new NotImplementedException("Receeved unexpected input");
+            }
+
+        }
+
         public bool IsRightBumperNewlyPressed()
         {
             switch (m_Mode)

@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework.Storage;
 
 using Pixl_Sport.RulesFolder;
 using Pixl_Sport.JudgementsFolder;
+using UserMenus;
 
 namespace Pixl_Sport
 {
@@ -41,7 +42,7 @@ namespace Pixl_Sport
 
 
 
-        List<Player> players = new List<Player>();
+        public List<Player> Players = new List<Player>();
 
         public Team Team1;
         public Team Team2;
@@ -54,7 +55,9 @@ namespace Pixl_Sport
 
         private PixlGame pixlGame;
 
-        public AudioManager audioM;
+        public AudioManager AudioM;
+
+        public MenuManager MenuM;
 
      
 
@@ -69,9 +72,11 @@ namespace Pixl_Sport
             PlaySpace = new Field();
             Scoreboard = new Scoreboard();
 
-            audioM = new AudioManager();
-            audioM.Initialize();
+            AudioM = new AudioManager();
+            AudioM.Initialize();
 
+            MenuM = new MenuManager(this);
+            MenuM.Initialize();
 
             Vector2 windowSize = new Vector2(pixlGame.GraphicsDevice.Viewport.Width,
                                                  pixlGame.GraphicsDevice.Viewport.Height);
@@ -104,8 +109,8 @@ namespace Pixl_Sport
             rulesList.Add(new NoPassing(this, new ScoreChange(this, -1, false)));
             rulesList.Add(new NoKicking(this, new ScoreChange(this, -4, false)));
             rulesList.Add(new NoRunning(this, new LightOnFire(Judgement.JudgementType.TeamMember)));
-             players.Add(new Player(Team1));
-            players.Add(new Player(Team2, InputController.InputMode.Player2));
+             Players.Add(new Player(Team1));
+            Players.Add(new Player(Team2, InputController.InputMode.Player2));
         }
 
         
@@ -117,16 +122,17 @@ namespace Pixl_Sport
             Ball.Position = new Vector2(352f, 432f / 2f);
             Ball.Clear();
             running = true;
-            audioM.StopSounds();
+            AudioM.StopSounds();
         }
 
          public void Load(ContentManager content)
         {
             pixels = content.Load<Texture2D>("line");
 
-            audioM.Load(content);
+            AudioM.Load(content);
             PlaySpace.Load(content);
             Scoreboard.Load(content);
+            MenuM.Load(content);
         }
 
 
@@ -143,40 +149,44 @@ namespace Pixl_Sport
 
         public void Update(GameTime T)
         {
-            if (running) 
-            Time = T.ElapsedGameTime.Milliseconds;
-
-            TimeSpan remaining = new TimeSpan(0, MinTime, SecTime);
-
-            Scoreboard.HomeTeam = Team1.TeamName;
-            Scoreboard.AwayTeam = Team2.TeamName;
-            Scoreboard.HomeScore = Team1.Score;
-            Scoreboard.AwayScore = Team2.Score;
-            Scoreboard.TimeRemaining = remaining;
-
-
-            foreach (Player p in players)
+            if (MenuM.OpenMenus) MenuM.Update(T);
+            else
             {
-                p.Update(T);
+                if (running)
+                    Time = T.ElapsedGameTime.Milliseconds;
 
+                TimeSpan remaining = new TimeSpan(0, MinTime, SecTime);
+
+                Scoreboard.HomeTeam = Team1.TeamName;
+                Scoreboard.AwayTeam = Team2.TeamName;
+                Scoreboard.HomeScore = Team1.Score;
+                Scoreboard.AwayScore = Team2.Score;
+                Scoreboard.TimeRemaining = remaining;
+
+
+                foreach (Player p in Players)
+                {
+                    p.Update(T);
+
+                }
+                Team1.Update(T);
+                Team2.Update(T);
+                foreach (TeamMember TM in Team1.Members)
+                {
+                    if (TM.Tackling) foreach (TeamMember V in Team2.Members) if (TM.Bounds.Intersects(V.Bounds)) TM.Hit(V);
+                    if (Ball.Bounds.Intersects(TM.Bounds) && Ball.State != Ball.BallState.Held && !TM.Equals(Ball.Possessor) && !Ball.HotBall) TM.GrabBall(Ball);
+
+                }
+                foreach (TeamMember TM in Team2.Members)
+                {
+                    if (TM.Tackling) foreach (TeamMember V in Team1.Members) if (TM.Bounds.Intersects(V.Bounds)) TM.Hit(V);
+                    if (Ball.Bounds.Intersects(TM.Bounds) && Ball.State != Ball.BallState.Held && !TM.Equals(Ball.Possessor) && !Ball.HotBall) TM.GrabBall(Ball);
+
+                }
+
+                Ball.Update(T);
+                RulesCheck();
             }
-            Team1.Update(T);
-            Team2.Update(T);
-             foreach (TeamMember TM in Team1.Members)
-             {
-                 if (TM.Tackling) foreach (TeamMember V in Team2.Members) if (TM.Bounds.Intersects(V.Bounds)) TM.Hit(V);
-                if(Ball.Bounds.Intersects(TM.Bounds)&& Ball.State != Ball.BallState.Held && !TM.Equals(Ball.Possessor) &&!Ball.HotBall) TM.GrabBall(Ball);
-                
-            }
-        foreach (TeamMember TM in Team2.Members)
-         {
-             if (TM.Tackling) foreach (TeamMember V in Team1.Members) if (TM.Bounds.Intersects(V.Bounds)) TM.Hit(V);
-             if (Ball.Bounds.Intersects(TM.Bounds) && Ball.State != Ball.BallState.Held && !TM.Equals(Ball.Possessor) && !Ball.HotBall) TM.GrabBall(Ball);
-
-         }
-
-            Ball.Update(T);
-            RulesCheck();
         }
 
         public void Draw(GameTime t, SpriteBatch b)
@@ -193,6 +203,9 @@ namespace Pixl_Sport
             }
 
             Ball.Draw(b, pixels, PlaySpace.FieldOrigin, PlaySpace.SizeMultiplier);
+
+            if(MenuM.OpenMenus) MenuM.Draw(b);
+
         }
 
 

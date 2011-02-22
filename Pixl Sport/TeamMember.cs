@@ -242,7 +242,7 @@ namespace Pixl_Sport
             
           
             target += new Vector2((float)Math.Cos(deviation)/(passAccuracy/3), (float)Math.Sin(deviation)/(passAccuracy/3));
-            team.Manager.audioM.PlayEffect("Kick");
+            team.Manager.AudioM.PlayEffect("Kick");
             HeldBall.SendFlying(target, passStrength /2, passStrength/8f);
             HeldBall.Kicked = true;
             HeldBall = null;

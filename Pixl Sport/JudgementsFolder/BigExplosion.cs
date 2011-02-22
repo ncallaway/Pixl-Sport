@@ -23,7 +23,7 @@ namespace Pixl_Sport
             int degree2 = (int)(rand.NextDouble() * 10000) % 45 +45;
             
             M.Ball.HotBall=true;
-            M.audioM.PlayEffect("Bomb");
+            M.AudioM.PlayEffect("Bomb");
             if (M.Ball.Possessor != null)
             {
                 M.Ball.Possessor.Stun(5000);

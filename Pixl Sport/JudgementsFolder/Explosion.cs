@@ -20,7 +20,7 @@ namespace Pixl_Sport
   {   Random rand = new Random();
       int degree = (int)rand.NextDouble()*360%360;
       TM.HeldBall.HotBall = true;
-      TM.Team.Manager.audioM.PlayEffect("Bomb");
+      TM.Team.Manager.AudioM.PlayEffect("Bomb");
       TM.TimeWithBall = 0;
       TM.HeldBall.Possessor = null;
       TM.BallMovement( .5f, 1f);

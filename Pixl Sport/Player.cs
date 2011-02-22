@@ -13,6 +13,7 @@ namespace Pixl_Sport
     class Player
     {
         private InputController input;
+        public InputController Input {get{ return input;}}
 
        
         private Team team;
@@ -49,13 +50,15 @@ namespace Pixl_Sport
 
 
         public void Update(GameTime t)
-        {
-           if (!CurrentCharacter.HasBall) foreach (TeamMember TM in team.Members) if(TM.HasBall) CurrentCharacter = TM;
-            input.Update();
+        {input.Update();
+
+
+            if (!CurrentCharacter.HasBall) foreach (TeamMember TM in team.Members) if(TM.HasBall) CurrentCharacter = TM;
+            
             if (input.RStickPosition().Length() >= .8 && !CurrentCharacter.Tackling) if (!CurrentCharacter.HasBall) CurrentCharacter.Tackle(input.RStickPosition());
             else if (input.IsFirePressed()) CurrentCharacter.Kick(input.RStickPosition()); else CurrentCharacter.Pass(input.RStickPosition());
             if(!CurrentCharacter.Tackling) CurrentCharacter.UpdatePosition(input.LStickPosition() * TeamMember.PLAYER_SPEED);
-            
+            if (input.IsPauseMenuNewlyPressed()) team.Manager.MenuM.Pause(team); 
 
         }
 
