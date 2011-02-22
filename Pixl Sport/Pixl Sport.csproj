@@ -85,10 +85,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI\Post.cs" />
+    <Compile Include="AudioManager.cs" />
     <Compile Include="Ball.cs" />
     <Compile Include="JudgementsFolder\BigExplosion.cs" />
     <Compile Include="JudgementsFolder\Rebound.cs" />
     <Compile Include="JudgementsFolder\RedCard.cs" />
+    <Compile Include="JudgementsFolder\ScoreExchange.cs" />
     <Compile Include="RulesFolder\BallHotPotato.cs" />
     <Compile Include="RulesFolder\HotPotato.cs" />
     <Compile Include="JudgementsFolder\Explosion.cs" />

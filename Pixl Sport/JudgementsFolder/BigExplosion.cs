@@ -11,30 +11,35 @@ namespace Pixl_Sport
 
         public BigExplosion()
         {
-            Judged = JudgementType.TeamMember;
+            Judged = JudgementType.Global;
             id = "KA-BOOMM!";
         }
 
 
-        public override void Execute(TeamMember TM)
+        public override void Execute(GameManager M)
         {
             Random rand = new Random();
-            int degree = (int)rand.NextDouble() * 360 % 360;
-            if(TM.HasBall) TM.HeldBall.HotBall = true;
-            TM.TimeWithBall = 0;
-            TM.HeldBall.Possessor = null;
-            TM.BallMovement(.5f, 1f);
-            foreach (TeamMember TM2 in TM.Team.Manager.Team1.Members) if (TM2.Bounds.Intersects(new BoundingSphere(new Vector3(TM.Position, 0f), 30f))){ TM2.Stun(4000); TM2.IsOnFire = true;}
-            foreach (TeamMember TM2 in TM.Team.Manager.Team2.Members) if (TM2.Bounds.Intersects(new BoundingSphere(new Vector3(TM.Position, 0f), 30f))) { TM2.Stun(4000); TM2.IsOnFire = true; }
+            int degree = (int)(rand.NextDouble()*10000) % 360;
+            int degree2 = (int)(rand.NextDouble() * 10000) % 45 +45;
+            
+            M.Ball.HotBall=true;
+            M.audioM.PlayEffect("Bomb");
+            if (M.Ball.Possessor != null)
+            {
+                M.Ball.Possessor.Stun(5000);
+                M.Ball.Possessor = null;
+            }
+            M.Ball.SendFlying(new Vector2((float)Math.Cos(degree), (float)Math.Sin(degree)), (float)Math.Sin(degree2), (float)Math.Cos(degree2));
+            foreach (TeamMember TM2 in M.Team1.Members) if (TM2.Bounds.Intersects(new BoundingSphere(new Vector3(M.Ball.Position, 0f), 30f))){ TM2.Stun(4000); TM2.IsOnFire = true;}
+            foreach (TeamMember TM2 in M.Team2.Members) if (TM2.Bounds.Intersects(new BoundingSphere(new Vector3(M.Ball.Position, 0f), 30f))) { TM2.Stun(4000); TM2.IsOnFire = true; }
            
-            TM.Stun(5000);
 
 
         }
 
         public override void Execute(Team T) { throw new NotImplementedException(); }
 
-        public override void Execute(GameManager M) { throw new NotImplementedException(); }
+        public override void Execute(TeamMember TM) { throw new NotImplementedException(); }
 
 
 

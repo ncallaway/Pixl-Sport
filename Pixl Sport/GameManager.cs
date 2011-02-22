@@ -36,6 +36,11 @@ namespace Pixl_Sport
         public int SecTime { get { return (time / 1000) % 60; } }
         private bool running;
         public void StopClock() { running = false;}
+
+
+
+
+
         List<Player> players = new List<Player>();
 
         public Team Team1;
@@ -49,6 +54,10 @@ namespace Pixl_Sport
 
         private PixlGame pixlGame;
 
+        public AudioManager audioM;
+
+     
+
 
         public GameManager(PixlGame game) {
             pixlGame = game;
@@ -59,6 +68,9 @@ namespace Pixl_Sport
         {
             PlaySpace = new Field();
             Scoreboard = new Scoreboard();
+
+            audioM = new AudioManager();
+            audioM.Initialize();
 
 
             Vector2 windowSize = new Vector2(pixlGame.GraphicsDevice.Viewport.Width,
@@ -88,8 +100,10 @@ namespace Pixl_Sport
             rulesList.Add(new RunInGoal(this, new ScoreChange(this, 5)));
             rulesList.Add(new ThroughThePostsGoal(this, new ScoreChange(this, 7)));
             rulesList.Add(new OutTheBackGoal(this, new Rebound(this)));
-            rulesList.Add(new BallHotPotato(this,  new BigExplosion(), 10));
-
+          rulesList.Add(new BallHotPotato(this,  new BigExplosion(), 10));
+            rulesList.Add(new NoPassing(this, new ScoreChange(this, -1, false)));
+            rulesList.Add(new NoKicking(this, new ScoreChange(this, -4, false)));
+            rulesList.Add(new NoRunning(this, new LightOnFire(Judgement.JudgementType.TeamMember)));
              players.Add(new Player(Team1));
             players.Add(new Player(Team2, InputController.InputMode.Player2));
         }
@@ -103,12 +117,14 @@ namespace Pixl_Sport
             Ball.Position = new Vector2(352f, 432f / 2f);
             Ball.Clear();
             running = true;
+            audioM.StopSounds();
         }
 
          public void Load(ContentManager content)
         {
             pixels = content.Load<Texture2D>("line");
-            
+
+            audioM.Load(content);
             PlaySpace.Load(content);
             Scoreboard.Load(content);
         }

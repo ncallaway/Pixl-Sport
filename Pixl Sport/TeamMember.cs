@@ -47,7 +47,7 @@ namespace Pixl_Sport
 
         
 
-
+        
 
         public float TimeWithBall;
 
@@ -119,15 +119,13 @@ namespace Pixl_Sport
 
                 if (!PlayerControlled)
                 {
-                    ai.Update(t);
+                   ai.Update(t);
                 }
 
                 trackMovingAverage();
 
                 if (HasBall)
                 {
-                    TimeWithBall += t.ElapsedGameTime.Milliseconds;
-                    HeldBall.Position = new Vector2(position.X, position.Y - 2);
                 }
                 prevPosition = this.Position;
             }
@@ -172,7 +170,7 @@ namespace Pixl_Sport
 
             target = new Vector2((float)Math.Cos(deviation)/passAccuracy, (float)Math.Sin(deviation)/passAccuracy);
 
-
+            HeldBall.Passed = true;
             HeldBall.SendFlying(target,(float) passStrength / 3f, (float) passStrength / 20f);
            
             HeldBall = null;
@@ -210,9 +208,10 @@ namespace Pixl_Sport
 
 
             HeldBall.SendFlying(target, .2f , .1f);
-            
+            HeldBall.Possessor = null;
             HeldBall = null;
             CantCatch = true;
+
         }
 
         public void UpdatePosition(Vector2 adjustment)
@@ -243,9 +242,9 @@ namespace Pixl_Sport
             
           
             target += new Vector2((float)Math.Cos(deviation)/(passAccuracy/3), (float)Math.Sin(deviation)/(passAccuracy/3));
-
+            team.Manager.audioM.PlayEffect("Kick");
             HeldBall.SendFlying(target, passStrength /2, passStrength/8f);
-            
+            HeldBall.Kicked = true;
             HeldBall = null;
             CantCatch = true;
         }
@@ -258,7 +257,7 @@ namespace Pixl_Sport
                 HeldBall = ball;
                 
 
-                TimeWithBall = 0f;
+                ball.TimeWithBall = 0f;
                 ball.Possessor = this;
                 ball.State = Ball.BallState.Held;
             }

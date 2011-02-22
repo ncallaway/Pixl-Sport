@@ -348,7 +348,7 @@ namespace Pixl_Sport.AI
             }
 
             myDirection.Normalize();
-            player.Position += myDirection;
+            player.UpdatePosition(myDirection);
         }
 
         private void performMoveToBall()
@@ -371,7 +371,7 @@ namespace Pixl_Sport.AI
 
             direction *= TeamMember.PLAYER_SPEED;
 
-            player.Position += direction;
+            player.UpdatePosition(direction);
         }
 
         private void performMoveToPosition()

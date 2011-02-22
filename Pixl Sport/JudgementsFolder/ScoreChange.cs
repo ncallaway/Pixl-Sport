@@ -31,6 +31,13 @@ namespace Pixl_Sport
             manager = M;
         }
 
+        public ScoreChange(GameManager M, int amount, bool RestartGame)
+        {
+            scoreDelta = amount;
+            Judged = JudgementType.TeamMember;
+            manager = M;
+        }
+
 
         public override void Execute(Team T)
         {
@@ -41,8 +48,7 @@ namespace Pixl_Sport
 
         public override void Execute(TeamMember TM)
         {
-            throw new NotImplementedException("What are you doing? You can't add points to a Team Member!");
-
+            TM.Team.Score += scoreDelta;
         }
 
 

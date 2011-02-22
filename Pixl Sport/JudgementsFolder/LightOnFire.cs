@@ -54,7 +54,9 @@ namespace Pixl_Sport
             foreach (TeamMember TM in T.Members)
             {
                 TM.IsOnFire = true;
+                TM.CantCatch = true;
 
+                if (TM.HasBall) TM.Drop();
             }
 
         }

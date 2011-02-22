@@ -29,8 +29,12 @@ namespace Pixl_Sport.RulesFolder
 
 
         public override void  Check()
-{          if(manager.SecTime % timeLimit==0 && manager.Ball.Possessor!=null) Enforce(manager.Ball.Possessor.Team, manager.Ball.Possessor);
- 	
+        {
+            if (manager.SecTime % timeLimit == 0&& manager.Time % 1000 ==00)
+            {
+                if (manager.Ball.Possessor != null) Enforce(manager.Ball.Possessor.Team, manager.Ball.Possessor);
+                else Enforce(null, null);
+            }
 }
     }
 }

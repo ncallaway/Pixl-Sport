@@ -20,6 +20,9 @@ namespace Pixl_Sport
         private float verticalForce;
         public float VerticalF { get { return verticalForce; } }
 
+        public bool Kicked;
+        public bool Passed;
+
         public float h;
         public float Height { get { return h; } set { h = value; } }
 
@@ -42,6 +45,8 @@ namespace Pixl_Sport
 
         private float velocity;
         public float Velocity { get { return velocity; } }
+
+        public float TimeWithBall;
 
         public enum BallState
         {
@@ -82,6 +87,7 @@ namespace Pixl_Sport
         {
             hotTime += t.ElapsedGameTime.Milliseconds;
             h = Math.Max(h, 0);
+         
 
             
 
@@ -101,6 +107,10 @@ namespace Pixl_Sport
                     break;
 
                 case BallState.Held:
+                    position = Possessor.Position;
+
+                    TimeWithBall += t.ElapsedGameTime.Milliseconds;
+                    Position = new Vector2(position.X, position.Y - 2);
                     break;
                 case BallState.Bouncing:
                         
@@ -117,8 +127,11 @@ namespace Pixl_Sport
             direction = Vector2.Zero;
             apexReached = true;
             height = 3f;
+            if (Possessor != null) Possessor.HeldBall = null;
+            TimeWithBall = 0f;
+            State = BallState.Flying;
             Possessor = null;
-
+            
         }
 
 
