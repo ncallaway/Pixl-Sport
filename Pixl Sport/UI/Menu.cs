@@ -1,0 +1,124 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Net;
+using Microsoft.Xna.Framework.Storage;
+
+using Pixl_Sport;
+
+
+
+namespace UserMenus
+{
+    class Menu
+    {
+        
+        protected List<MenuItem> menuitems = new List<MenuItem>();
+        protected MenuItem current;
+        protected Player player;
+        protected MenuManager parent;
+        protected SpriteFont font;
+        protected Texture2D image;
+        protected int current_index;
+        protected int x_position;
+        protected int y_position;
+        protected int x_spacing;
+        protected int y_spacing;
+
+        public Menu() { }
+
+        public Menu(MenuManager Parent, Player Player)
+        {
+            parent = Parent;
+            player = Player;
+            font = parent.Font;
+            image = parent.Image;
+            current_index = 0;
+            x_position = 400;
+            y_position = 400;
+            y_spacing = 20;
+            x_spacing = 0;
+
+        }
+
+        public Menu(MenuManager Parent)
+        {
+            parent = Parent;
+            font = parent.Font;
+            image = parent.Image;
+            current_index = 0;
+            x_position = 200;
+            y_position = 200;
+            y_spacing = 20;
+            x_spacing = 0;
+
+        }
+
+
+        public void addMenuItem(MenuItem menuitem)
+        {
+            menuitems.Add(menuitem);
+
+        }
+
+        public void Load(ContentManager CM)
+        {
+
+            font = CM.Load<SpriteFont>("Fonts/MenuPixlFont");
+            image = CM.Load<Texture2D>("line");
+
+        }
+
+        public virtual void Update(GameTime gametime)
+        {
+            if (parent.Players.Count > 0) foreach (Player p in parent.Players)
+                {
+                    if (current == null) current = menuitems.ElementAt(0);
+
+
+                    p.Input.Update();
+                    if (p.Input.IsMoveUpNewlyPressed()|| p.Input.IsDPadUpNewlyPressed()) current_index--;
+                    if (p.Input.IsMoveDownNewlyPressed()|| p.Input.IsDPadDownNewlyPressed()) current_index++;
+                    if (p.Input.IsBButtonNewlyPressed()) parent.CloseMenu();
+                    if (current_index >= menuitems.Count) current_index = 0;
+                    if (current_index < 0) current_index = menuitems.Count - 1;
+                    current = menuitems.ElementAt(current_index);
+                    if (p.Input.IsAButtonNewlyPressed())
+                    {
+                        p.Input.Update();
+                        current.execute();
+                    }
+
+                }
+        }
+
+        public virtual void Draw(SpriteBatch batch)
+        {
+            batch.Draw(image, new Rectangle(x_position, y_position, 400, y_spacing*menuitems.Count), Color.Black);
+            
+            foreach (MenuItem x in menuitems)
+            {
+                
+                    int i = menuitems.IndexOf(x);
+                    batch.DrawString(font, x.getId(), new Vector2(x_position + i* x_spacing, y_position + y_spacing * i), Color.Yellow);
+                
+            }
+
+        }
+    
+    
+    
+    }
+
+    
+}
