@@ -11,6 +11,7 @@ namespace Pixl_Sport.JudgementsFolder
         {
             manager = M;
             Judged = JudgementType.Global;
+            id = "Rebound";
         }
 
         public override void Execute(GameManager M)

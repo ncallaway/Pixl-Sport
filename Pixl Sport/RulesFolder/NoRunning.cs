@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework;
-namespace Pixl_Sport.RulesFolder
+using Pixl_Sport;
+
+namespace UserMenus
 {
     class NoRunning: Rule
     {
@@ -17,6 +19,12 @@ namespace Pixl_Sport.RulesFolder
             ruleName = "Stay right where you are";
             manager = Manager;
             assignedJudgement = punishment;
+        }
+
+              public NoRunning(GameManager Manager)
+        {
+            ruleName = "No Running";
+            manager = Manager;
         }
 
 

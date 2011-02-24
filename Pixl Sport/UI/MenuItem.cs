@@ -3,34 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
+
 namespace UserMenus
 {
     class MenuItem
     {
         protected String id;
+        public String Id { get { return id; } }
+        protected Color color;
 
 
-        public MenuItem(String Id)
+        public MenuItem(String ID)
         {
-            id = Id;
+            id = ID;
+            color = Color.Black;
         }
 
         public MenuItem()
         {
             id = "Default ID";
+
+            color = Color.White;
+
         }
 
 
-        public String getId()
-        {
-            if (id == null) return "Null ID";
-            else return id;
-        }
+      
 
         public virtual void execute()
         {
             // Various Implementation things go here.
 
+
+        }
+
+        public virtual void Draw(SpriteBatch batch, SpriteFont font,  int x_pos, int y_pos)
+        {
+
+            batch.DrawString(font, id, new Vector2(x_pos, y_pos), color);
 
         }
 

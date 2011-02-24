@@ -12,7 +12,7 @@ namespace Pixl_Sport
         public BigExplosion()
         {
             Judged = JudgementType.Global;
-            id = "KA-BOOMM!";
+            id = "Big Explosion";
         }
 
 

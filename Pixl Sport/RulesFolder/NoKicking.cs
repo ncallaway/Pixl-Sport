@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Pixl_Sport.RulesFolder
+using Pixl_Sport;
+
+namespace UserMenus
 {
     class NoKicking:Rule
     {
@@ -12,6 +14,12 @@ namespace Pixl_Sport.RulesFolder
             ruleName = "Kicking will not be tolerated";
             manager = Manager;
             assignedJudgement = punishment;
+        }
+
+              public NoKicking(GameManager Manager)
+        {
+            ruleName = "No Kicking";
+            manager = Manager;
         }
 
 

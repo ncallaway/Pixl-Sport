@@ -22,7 +22,7 @@ namespace Pixl_Sport
         public int Number { get { return number; } set { number = Math.Abs(value % 100); } }
 
         private Team.Position profession;
-        public Team.Position Profession { get { return Profession; } set { profession = value; } }
+        public Team.Position Profession { get { return profession; } set { profession = value; } }
 
         public bool OnField;
         public bool IsOnFire;
@@ -88,6 +88,9 @@ namespace Pixl_Sport
             TimeWithBall = 0f;
             numPositionAvgFrames = 0;
             tackleTimer = 501f;
+            name = "Default Name";
+            number = 1;
+
         }
 
         public void Draw(SpriteBatch batch, Texture2D pixels, Vector2 fieldOrigin, uint scaleSize)
@@ -119,14 +122,11 @@ namespace Pixl_Sport
 
                 if (!PlayerControlled)
                 {
-                   ai.Update(t);
+                //   ai.Update(t);
                 }
 
                 trackMovingAverage();
 
-                if (HasBall)
-                {
-                }
                 prevPosition = this.Position;
             }
         }
@@ -173,7 +173,7 @@ namespace Pixl_Sport
             HeldBall.Passed = true;
             HeldBall.SendFlying(target,(float) passStrength / 3f, (float) passStrength / 20f);
            
-            HeldBall = null;
+           // HeldBall = null;
             CantCatch = true;
         }
 
@@ -191,7 +191,7 @@ namespace Pixl_Sport
 
             HeldBall.SendFlying(target, velocity, vertical);
 
-            HeldBall = null;
+            //HeldBall = null;
             CantCatch = true;
         }
 
@@ -208,8 +208,8 @@ namespace Pixl_Sport
 
 
             HeldBall.SendFlying(target, .2f , .1f);
-            HeldBall.Possessor = null;
-            HeldBall = null;
+           // HeldBall.Possessor = null;
+           // HeldBall = null;
             CantCatch = true;
 
         }
@@ -243,9 +243,10 @@ namespace Pixl_Sport
           
             target += new Vector2((float)Math.Cos(deviation)/(passAccuracy/3), (float)Math.Sin(deviation)/(passAccuracy/3));
             team.Manager.AudioM.PlayEffect("Kick");
-            HeldBall.SendFlying(target, passStrength /2, passStrength/8f);
             HeldBall.Kicked = true;
-            HeldBall = null;
+            HeldBall.SendFlying(target, passStrength /2, passStrength/8f);
+           // HeldBall.Kicked = true;
+            //HeldBall = null;
             CantCatch = true;
         }
 

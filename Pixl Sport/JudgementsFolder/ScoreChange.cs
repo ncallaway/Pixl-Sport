@@ -29,6 +29,9 @@ namespace Pixl_Sport
             scoreDelta = amount;
             Judged = JudgementType.Team;
             manager = M;
+
+            if (amount > 0) id = "Score + " + amount;
+            else id = "Score - " + Math.Abs(amount);
         }
 
         public ScoreChange(GameManager M, int amount, bool RestartGame)
@@ -36,6 +39,8 @@ namespace Pixl_Sport
             scoreDelta = amount;
             Judged = JudgementType.TeamMember;
             manager = M;
+            if(amount>0) id = "Score + " + amount;
+            else id = "Score - " + Math.Abs(amount);
         }
 
 

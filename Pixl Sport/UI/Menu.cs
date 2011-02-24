@@ -34,6 +34,7 @@ namespace UserMenus
         protected int y_position;
         protected int x_spacing;
         protected int y_spacing;
+        protected String title;
 
         public Menu() { }
 
@@ -48,6 +49,7 @@ namespace UserMenus
             y_position = 400;
             y_spacing = 20;
             x_spacing = 0;
+            title = "";
 
         }
 
@@ -61,7 +63,7 @@ namespace UserMenus
             y_position = 200;
             y_spacing = 20;
             x_spacing = 0;
-
+            title = "";
         }
 
 
@@ -104,14 +106,17 @@ namespace UserMenus
 
         public virtual void Draw(SpriteBatch batch)
         {
-            batch.Draw(image, new Rectangle(x_position, y_position, 400, y_spacing*menuitems.Count), Color.Black);
-            
+            batch.Draw(image, new Rectangle(x_position - 5, y_position - 5, 410, y_spacing * (menuitems.Count+1) + 10), Color.Gray);
+
+            batch.Draw(image, new Rectangle(x_position, y_position, 400, y_spacing * (menuitems.Count+1)), Color.Black);
+
+            batch.DrawString(font, title, new Vector2(x_position, y_position), Color.White);
             foreach (MenuItem x in menuitems)
             {
                 
                     int i = menuitems.IndexOf(x);
-                    batch.DrawString(font, x.getId(), new Vector2(x_position + i* x_spacing, y_position + y_spacing * i), Color.Yellow);
-                
+                    if (i == current_index) x.Draw(batch, font, x_position + (i + 1) * x_spacing + 15, y_position + y_spacing * (i + 1));
+                    else x.Draw(batch, font, x_position + (i+1) * x_spacing, y_position + y_spacing * (i+1));
             }
 
         }

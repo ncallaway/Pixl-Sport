@@ -92,10 +92,15 @@
     <Compile Include="JudgementsFolder\Rebound.cs" />
     <Compile Include="JudgementsFolder\RedCard.cs" />
     <Compile Include="JudgementsFolder\ScoreExchange.cs" />
+    <Compile Include="UI\JudgementItem.cs" />
     <Compile Include="UI\Menu.cs" />
     <Compile Include="UI\MenuItem.cs" />
+    <Compile Include="UI\RuleImplementerItem.cs" />
+    <Compile Include="UI\RuleItem.cs" />
+    <Compile Include="UI\RuleMenu.cs" />
+    <Compile Include="UI\TMemberItem.cs" />
     <Compile Include="UI\ReplaceMenuItem.cs" />
-    <Compile Include="RulesFolder\BallHotPotato.cs" />
+    <Compile Include="RulesFolder\TimeBall.cs" />
     <Compile Include="RulesFolder\HotPotato.cs" />
     <Compile Include="JudgementsFolder\Explosion.cs" />
     <Compile Include="Field.cs" />
@@ -122,6 +127,7 @@
     <Compile Include="Team.cs" />
     <Compile Include="AI\TeamAI.cs" />
     <Compile Include="TeamMember.cs" />
+    <Compile Include="UI\TeamMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

@@ -17,13 +17,13 @@ namespace Pixl_Sport
             {
 
                 case JudgementType.Team:
-                    id = "You can tell by the way we're sparking that we're burning alive!";
+                    id = "Ignite Team";
                     break;
                 case JudgementType.Global:
-                    id = "Let the world BURN!";
+                    id = "Ignite All";
                     break;
                 case JudgementType.TeamMember:
-                    id = "You are on FIRE!";
+                    id = "Ignite One";
                     break;
                 default:
                     throw new NotImplementedException("I can't start fires if you don't tell me who to burn");

@@ -11,8 +11,8 @@ namespace Pixl_Sport
 
         public Explosion()
         {
-            Judged = JudgementType.TeamMember;
-            id = "KA-BOOMM!";
+            Judged = JudgementType.Global;
+            id = "Explosion";
         }
 
 
@@ -30,9 +30,24 @@ namespace Pixl_Sport
   }
 
   public override void Execute(Team T){ throw new NotImplementedException();}
+  public override void Execute(GameManager M)
+  {
+      Random rand = new Random();
+      int degree = (int)(rand.NextDouble() * 10000) % 360;
+      int degree2 = (int)(rand.NextDouble() * 10000) % 45 + 45;
 
-  public override void Execute(GameManager M){ throw new NotImplementedException();}
+      M.Ball.HotBall = true;
+      M.AudioM.PlayEffect("Bomb");
+      if (M.Ball.Possessor != null)
+      {
+          M.Ball.Possessor.Stun(5000);
+          M.Ball.Possessor = null;
+      }
+      M.Ball.SendFlying(new Vector2((float)Math.Cos(degree), (float)Math.Sin(degree)), (float)Math.Sin(degree2), (float)Math.Cos(degree2));
+     
 
+
+  }
 
 
     }

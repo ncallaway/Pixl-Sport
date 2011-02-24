@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Pixl_Sport.RulesFolder
+using Pixl_Sport;
+
+namespace UserMenus
 {
     class NoPassing:Rule
     {
@@ -14,6 +16,11 @@ namespace Pixl_Sport.RulesFolder
             assignedJudgement = punishment;
         }
 
+              public NoPassing(GameManager Manager)
+        {
+            ruleName = "No Passing";
+            manager = Manager;
+        }
 
         public override void Check()
         {

@@ -42,7 +42,7 @@ namespace Pixl_Sport
 
         public Player(Team team, InputController.InputMode Input)
         {
-            input = new InputController(InputController.InputMode.Player2);
+            input = new InputController(Input);
             this.team = team;
             CurrentCharacter = team.Members.ElementAt(0);
 
@@ -55,10 +55,11 @@ namespace Pixl_Sport
 
             if (!CurrentCharacter.HasBall) foreach (TeamMember TM in team.Members) if(TM.HasBall) CurrentCharacter = TM;
             
-            if (input.RStickPosition().Length() >= .8 && !CurrentCharacter.Tackling) if (!CurrentCharacter.HasBall) CurrentCharacter.Tackle(input.RStickPosition());
+            if (input.RStickPosition().Length() >= .8 && !CurrentCharacter.Tackling && input.RStickOldPosition().Length()< .8) if (!CurrentCharacter.HasBall) CurrentCharacter.Tackle(input.RStickPosition());
             else if (input.IsFirePressed()) CurrentCharacter.Kick(input.RStickPosition()); else CurrentCharacter.Pass(input.RStickPosition());
             if(!CurrentCharacter.Tackling) CurrentCharacter.UpdatePosition(input.LStickPosition() * TeamMember.PLAYER_SPEED);
-            if (input.IsPauseMenuNewlyPressed()) team.Manager.MenuM.Pause(team); 
+            if (input.IsPauseMenuNewlyPressed()) team.Manager.MenuM.Pause(team);
+            if (input.IsDPadDownNewlyPressed()) team.Manager.MenuM.OpenRuleMenu(team.TeamName=="Broadway Bisons");
 
         }
 

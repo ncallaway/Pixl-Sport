@@ -131,12 +131,15 @@ namespace Pixl_Sport
             TimeWithBall = 0f;
             State = BallState.Flying;
             Possessor = null;
+            Passed = false;
+            Kicked = false;
             
         }
 
 
         public void SendFlying(Vector2 direction, float Velocity, float verticalF)
         {
+            if(Possessor!=null) Possessor.HeldBall = null;
             verticalForce = verticalF;
             velocity = Velocity;
             this.direction = direction;

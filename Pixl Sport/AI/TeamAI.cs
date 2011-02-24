@@ -96,6 +96,7 @@ namespace Pixl_Sport.AI
             setOpposition();
             Vector2 start = Home ? HOME_KICKOFF_START : AWAY_KICKOFF_START;
             Vector2 end = Home ? HOME_KICKOFF_END : AWAY_KICKOFF_END;
+            
             for (int i = 0; i < Team.Members.Count; i++) {
                 TeamMember m = Team.Members[i];
                 m.Position = start + (float)i / (float)Team.Members.Count * (end - start);

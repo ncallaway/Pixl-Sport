@@ -36,10 +36,10 @@ namespace Pixl_Sport
             HomeTeam = "BROADWAY BISONS";
             AwayTeam = "NEW JERSEY DEVILS";
 
-            HomeScore = 9;
-            AwayScore = 24;
+            HomeScore = 0;
+            AwayScore = 0;
 
-            Qtr = 1;
+            Qtr = 0;
             Mode = "-";
             TimeRemaining = new TimeSpan();
         }

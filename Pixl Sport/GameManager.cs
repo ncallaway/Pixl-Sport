@@ -25,12 +25,14 @@ namespace Pixl_Sport
 
     class GameManager
     {
-        List<Rule> rulesList = new List<Rule>();
+        Dictionary<String, Rule> rulesList = new Dictionary<String,Rule>();
 
 
         // These variables encompass the gameclock.
 
-        private static int QUARTERTIME = 120000;
+        //private static int QUARTERTIME = 120000;
+        private static int QUARTERTIME = 30000;
+      
         private int time;
         public int Time { get { return time; } set { time = Math.Max(time - value, 0); } }
         public int MinTime { get { return time / 60000; } }
@@ -72,11 +74,6 @@ namespace Pixl_Sport
             PlaySpace = new Field();
             Scoreboard = new Scoreboard();
 
-            AudioM = new AudioManager();
-            AudioM.Initialize();
-
-            MenuM = new MenuManager(this);
-            MenuM.Initialize();
 
             Vector2 windowSize = new Vector2(pixlGame.GraphicsDevice.Viewport.Width,
                                                  pixlGame.GraphicsDevice.Viewport.Height);
@@ -96,21 +93,27 @@ namespace Pixl_Sport
             Team1.Color = Color.Cyan;
             Team2.Color = new Color(167, 167, 167);
 
+
+            AudioM = new AudioManager();
+            AudioM.Initialize();
+
+            MenuM = new MenuManager(this);
+            MenuM.Initialize();
+
             time = QUARTERTIME;
 
-            SetupKickoff();
+            AddRule(new OutOfBounds(this, new LightOnFire(Judgement.JudgementType.TeamMember)));
+            AddRule(new OutOfBounds(this, new Rebound(this)));
+            AddRule(new RunInGoal(this, new ScoreExchange(this)));
+            AddRule(new ThroughThePostsGoal(this, new ScoreChange(this, 7)));
+            AddRule(new OutTheBackGoal(this, new Rebound(this)));
+            AddRule(new PassInGoal(this, new ScoreChange(this, -5)));
 
-            rulesList.Add(new OutOfBounds(this, new LightOnFire(Judgement.JudgementType.TeamMember)));
-            rulesList.Add(new OutOfBounds(this, new Rebound(this)));
-            rulesList.Add(new RunInGoal(this, new ScoreChange(this, 5)));
-            rulesList.Add(new ThroughThePostsGoal(this, new ScoreChange(this, 7)));
-            rulesList.Add(new OutTheBackGoal(this, new Rebound(this)));
-          rulesList.Add(new BallHotPotato(this,  new BigExplosion(), 10));
-            rulesList.Add(new NoPassing(this, new ScoreChange(this, -1, false)));
-            rulesList.Add(new NoKicking(this, new ScoreChange(this, -4, false)));
-            rulesList.Add(new NoRunning(this, new LightOnFire(Judgement.JudgementType.TeamMember)));
-             Players.Add(new Player(Team1));
-            Players.Add(new Player(Team2, InputController.InputMode.Player2));
+            AddPlayer(Team1, InputController.InputMode.Player1);
+            AddPlayer(Team2, InputController.InputMode.Player2);
+
+
+            quarterChange();
         }
 
         
@@ -125,6 +128,16 @@ namespace Pixl_Sport
             AudioM.StopSounds();
         }
 
+
+        public void AddPlayer(Team team, InputController.InputMode spot)
+        {
+            Player temp = new Player(team, spot);
+            Players.Add(temp);
+            team.Players.Add(temp);
+
+
+        }
+
          public void Load(ContentManager content)
         {
             pixels = content.Load<Texture2D>("line");
@@ -136,11 +149,18 @@ namespace Pixl_Sport
         }
 
 
+         public void AddRule(Rule newRule)
+         {  
+             if(rulesList.ContainsKey(newRule.CallName)) rulesList.Remove(newRule.CallName);
+             else rulesList.Add(newRule.CallName, newRule);
+         }
+
+
         //This itterates throught the current Rules and checks them. If they are broken it enforces them.
         public void RulesCheck()
         {
 
-            foreach (Rule R in rulesList)
+            foreach (Rule R in rulesList.Values)
             {
                 R.Check();
 
@@ -186,6 +206,8 @@ namespace Pixl_Sport
 
                 Ball.Update(T);
                 RulesCheck();
+
+                if (time <= 0) quarterChange();
             }
         }
 
@@ -206,6 +228,15 @@ namespace Pixl_Sport
 
             if(MenuM.OpenMenus) MenuM.Draw(b);
 
+        }
+
+        private void quarterChange()
+        {
+            if (Scoreboard.Qtr % 2 == 0 || Team1.Score == Team2.Score) { MenuM.OpenRuleMenu(false); MenuM.OpenRuleMenu(true); }
+            else MenuM.OpenRuleMenu(Team1.Score < Team2.Score);
+            Scoreboard.Qtr++;
+            time = QUARTERTIME;
+            SetupKickoff();
         }
 
 

@@ -9,6 +9,7 @@ namespace Pixl_Sport
     {
          protected String ruleName;
          public String RuleName { get { return ruleName; } }
+         public String CallName { get { return ruleName + ": " + assignedJudgement.Id; } }
          protected GameManager manager;
 
          protected Judgement assignedJudgement;
@@ -19,7 +20,10 @@ namespace Pixl_Sport
 
          public abstract void Check();
 
-
+         public virtual void SetJudgement(Judgement newJudgement)
+         {
+             assignedJudgement = newJudgement;
+         }
 
          public virtual void Enforce(Team T, TeamMember TM)
          {

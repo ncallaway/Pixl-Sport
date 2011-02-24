@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Pixl_Sport.RulesFolder
+using Pixl_Sport;
+
+namespace UserMenus
 {
     class NoFighting: Rule
     {
@@ -12,6 +14,12 @@ namespace Pixl_Sport.RulesFolder
             ruleName = "Tackling will not be tolerated";
             manager = Manager;
             assignedJudgement = punishment;
+        }
+
+        public NoFighting(GameManager Manager)
+        {
+            ruleName = "No Tackling";
+            manager = Manager;
         }
 
 

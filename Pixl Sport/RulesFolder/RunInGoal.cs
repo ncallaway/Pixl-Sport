@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Pixl_Sport
+using Pixl_Sport;
+
+namespace UserMenus
 {
     class RunInGoal:Rule
     {
@@ -14,12 +16,18 @@ namespace Pixl_Sport
             assignedJudgement = judge;
         }
 
+                public RunInGoal(GameManager M)
+        {
+            manager = M;
+            ruleName = "Touchdown";
+        }
+
         public override void Check()
         {
             if (manager.Ball.State == Ball.BallState.Held)
             {
-                if (manager.Ball.Position.X < 50 && manager.Ball.Possessor.Team == manager.Team2) Enforce(manager.Team2, null);
-                if (manager.Ball.Position.X > 650 && manager.Ball.Possessor.Team == manager.Team1) Enforce(manager.Team1, null);
+                if (manager.Ball.Position.X == 50 && manager.Ball.Possessor.Team == manager.Team2) Enforce(manager.Team2, null);
+                if (manager.Ball.Position.X == 650 && manager.Ball.Possessor.Team == manager.Team1) Enforce(manager.Team1, null);
             }
         }
         
@@ -31,7 +39,7 @@ namespace Pixl_Sport
         public OutTheBackGoal(GameManager M, Judgement judge)
         {
             manager = M;
-            ruleName = "GOOOOAAALLL!!!";
+            ruleName = "Out the Back";
             assignedJudgement = judge;
         }
 
@@ -50,7 +58,7 @@ namespace Pixl_Sport
         public ThroughThePostsGoal(GameManager M, Judgement judge)
         {
             manager = M;
-            ruleName = "GOOOOAAALLL!!!";
+            ruleName = "Through the Posts";
             assignedJudgement = judge;
         }
 
@@ -70,14 +78,18 @@ namespace Pixl_Sport
         public PassInGoal(GameManager M, Judgement judge)
         {
             manager = M;
-            ruleName = "GOOOOAAALLL!!!";
+            ruleName = "Pass In Goal";
             assignedJudgement = judge;
         }
 
         public override void Check()
         {
-            
 
+            if (manager.Ball.State == Ball.BallState.Held)
+            {
+                if (manager.Ball.Position.X < 50 && manager.Ball.Possessor.Team == manager.Team2) Enforce(manager.Team2, null);
+                if (manager.Ball.Position.X > 650 && manager.Ball.Possessor.Team == manager.Team1) Enforce(manager.Team1, null);
+            }
         }
 
 

@@ -10,8 +10,9 @@ namespace Pixl_Sport.JudgementsFolder
         
         public ScoreExchange(GameManager M)
         {
-            Judged = JudgementType.Team;
+            Judged = JudgementType.Global;
             manager = M;
+            
         
         }
 

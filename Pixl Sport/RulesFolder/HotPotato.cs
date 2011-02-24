@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Pixl_Sport
+using Pixl_Sport;
+
+namespace UserMenus
 {
     class HotPotato:Rule
     {
@@ -15,6 +17,13 @@ namespace Pixl_Sport
             manager = M;
             timeLimit = 3000f;
 
+        }
+
+        public HotPotato(GameManager M)
+        {
+            ruleName = "Don't hold the ball too long";
+            manager = M;
+            timeLimit = 3000f;
         }
 
         public override void Check()

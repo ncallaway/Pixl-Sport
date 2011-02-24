@@ -34,6 +34,8 @@ namespace Pixl_Sport
         private GameManager manager;
         public GameManager Manager { get { return manager; } set { manager = value; } }
 
+        public List<Player> Players = new List<Player>();
+
         public int Score;
 
         public Team(String name, GameManager manager)
@@ -51,7 +53,8 @@ namespace Pixl_Sport
 
             for (int i = 0; i < 7; i++) {
                 TeamMember m = new TeamMember(this);
-                m.OnField = true;
+               m.OnField = true;
+                m.Number = i;
                 if (i < 3) {
                     m.Profession = Position.Bricky;
                 } else if (i == 3) {

@@ -24,10 +24,17 @@ namespace UserMenus
         public Texture2D Image { get {return image;}}
 
 
-        private Menu pauseMenu;
+        private TeamMenu pauseMenu1;
+        private TeamMenu pauseMenu2;
         public List<Player> Players;
 
         public GameManager Manager;
+
+        private RuleMenu ruleMenu1;
+
+        private RuleMenu ruleMenu2;
+
+
 
         public MenuManager(GameManager M)
         {
@@ -37,16 +44,20 @@ namespace UserMenus
 
         public void Initialize(){
             Players = Manager.Players;
-            pauseMenu = new Menu(this);
-            pauseMenu.addMenuItem(new MenuItem("Test Item 1"));
-            pauseMenu.addMenuItem(new MenuItem("Test Item 2"));
+            pauseMenu1 = new TeamMenu(Manager.Team1, this);
+            pauseMenu2 = new TeamMenu(Manager.Team2, this);
+            ruleMenu1 = new RuleMenu(this, Manager.Team1);
+            ruleMenu2 = new RuleMenu(this, Manager.Team2);
         
         }
 
 
         public void Load(ContentManager CM)
         {
-            pauseMenu.Load(CM);   
+            pauseMenu1.Load(CM);
+            pauseMenu2.Load(CM);
+            ruleMenu1.Load(CM);
+            ruleMenu2.Load(CM);
         }
 
 
@@ -60,14 +71,15 @@ namespace UserMenus
         public void Pause()
         {
 
-            currentMenus.Push(pauseMenu);
+            currentMenus.Push(pauseMenu1);
 
         }
 
         public void Pause(Team team)
         {
 
-            OpenMenu(pauseMenu);
+            if (team == Manager.Team1) OpenMenu(pauseMenu1);
+            else OpenMenu(pauseMenu2);
 
         }
 
@@ -75,6 +87,15 @@ namespace UserMenus
         {
             Manager.AudioM.PauseSounds();
             currentMenus.Push(menu);
+        }
+
+     
+        public void OpenRuleMenu(bool left)
+        {
+            
+            Manager.AudioM.PauseSounds();
+            if (left) currentMenus.Push(ruleMenu1);
+            else currentMenus.Push(ruleMenu2);
         }
 
 

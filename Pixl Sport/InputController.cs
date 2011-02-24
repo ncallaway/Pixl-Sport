@@ -490,6 +490,21 @@ namespace Pixl_Sport
 
             }
         }
+        public Vector2 RStickOldPosition()
+        {
+
+            switch (m_Mode)
+            {
+                case InputMode.Player1:
+                    return new Vector2(m_oldControllerState[0].ThumbSticks.Right.X, -m_oldControllerState[0].ThumbSticks.Right.Y);
+                case InputMode.Player2:
+                    return new Vector2(m_oldControllerState[1].ThumbSticks.Left.X, -m_oldControllerState[1].ThumbSticks.Left.Y);
+                default:
+                    throw new NotImplementedException("Receeved unexpected input");
+
+
+            }
+        }
 
     }
 
