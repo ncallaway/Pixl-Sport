@@ -31,7 +31,7 @@ namespace Pixl_Sport
         // These variables encompass the gameclock.
 
         //private static int QUARTERTIME = 120000;
-        private static int QUARTERTIME = 30000;
+        private static int QUARTERTIME = 3000;
       
         private int time;
         public int Time { get { return time; } set { time = Math.Max(time - value, 0); } }
@@ -52,6 +52,10 @@ namespace Pixl_Sport
         public Field PlaySpace;
         public Scoreboard Scoreboard;
         public List<Team> BothTeams = new List<Team>();
+
+        public IAsyncResult KeyboardResult;
+
+
 
         private Texture2D pixels;
 
@@ -90,15 +94,24 @@ namespace Pixl_Sport
             Team1.Initialize();
             Team2.Initialize();
 
+            /*
+
+            KeyboardResult = Guide.BeginShowKeyboardInput(PlayerIndex.One, "TeamName entry", "Enter the team's name here", "Boradway Bisons", null, null);
+            Team1.TeamName = Guide.EndShowKeyboardInput(KeyboardResult);
+            
+            */
+
+
             Team1.Color = Color.Cyan;
             Team2.Color = new Color(167, 167, 167);
+
+            
 
 
             AudioM = new AudioManager();
             AudioM.Initialize();
 
-            MenuM = new MenuManager(this);
-            MenuM.Initialize();
+           
 
             time = QUARTERTIME;
 
@@ -107,13 +120,15 @@ namespace Pixl_Sport
             AddRule(new RunInGoal(this, new ScoreExchange(this)));
             AddRule(new ThroughThePostsGoal(this, new ScoreChange(this, 7)));
             AddRule(new OutTheBackGoal(this, new Rebound(this)));
-            AddRule(new PassInGoal(this, new ScoreChange(this, -5)));
+            AddRule(new PassInGoal(this, new ScoreChange(this, 5)));
 
             AddPlayer(Team1, InputController.InputMode.Player1);
             AddPlayer(Team2, InputController.InputMode.Player2);
 
 
-            quarterChange();
+            MenuM = new MenuManager(this);
+            MenuM.Initialize();
+            
         }
 
         
@@ -126,6 +141,16 @@ namespace Pixl_Sport
             Ball.Clear();
             running = true;
             AudioM.StopSounds();
+        }
+
+
+        public void StartGame()
+        {
+            Scoreboard.Qtr = 0;
+            Scoreboard.AwayScore = 0;
+            Scoreboard.HomeScore = 0;
+            quarterChange();
+
         }
 
 
@@ -172,8 +197,7 @@ namespace Pixl_Sport
             if (MenuM.OpenMenus) MenuM.Update(T);
             else
             {
-                if (running)
-                    Time = T.ElapsedGameTime.Milliseconds;
+                if (running) Time = T.ElapsedGameTime.Milliseconds;
 
                 TimeSpan remaining = new TimeSpan(0, MinTime, SecTime);
 
@@ -191,6 +215,9 @@ namespace Pixl_Sport
                 }
                 Team1.Update(T);
                 Team2.Update(T);
+
+                
+                            
                 foreach (TeamMember TM in Team1.Members)
                 {
                     if (TM.Tackling) foreach (TeamMember V in Team2.Members) if (TM.Bounds.Intersects(V.Bounds)) TM.Hit(V);
@@ -232,12 +259,19 @@ namespace Pixl_Sport
 
         private void quarterChange()
         {
-            if (Scoreboard.Qtr % 2 == 0 || Team1.Score == Team2.Score) { MenuM.OpenRuleMenu(false); MenuM.OpenRuleMenu(true); }
-            else MenuM.OpenRuleMenu(Team1.Score < Team2.Score);
-            Scoreboard.Qtr++;
-            time = QUARTERTIME;
-            SetupKickoff();
+            if (Scoreboard.Qtr == 4) MenuM.MainMenu();
+            else
+            {
+                if (Scoreboard.Qtr % 2 == 0 || Team1.Score == Team2.Score) { MenuM.OpenRuleMenu(false); MenuM.OpenRuleMenu(true); }
+                else MenuM.OpenRuleMenu(Team1.Score < Team2.Score);
+                Scoreboard.Qtr++;
+                time = QUARTERTIME;
+                SetupKickoff();
+            }
         }
+
+
+        
 
 
 

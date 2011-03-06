@@ -34,11 +34,14 @@ namespace UserMenus
 
         private RuleMenu ruleMenu2;
 
+        private MainMenu mainMenu;
+
 
 
         public MenuManager(GameManager M)
         {
             Manager = M;
+            mainMenu = new MainMenu(this);
         }
 
 
@@ -48,6 +51,7 @@ namespace UserMenus
             pauseMenu2 = new TeamMenu(Manager.Team2, this);
             ruleMenu1 = new RuleMenu(this, Manager.Team1);
             ruleMenu2 = new RuleMenu(this, Manager.Team2);
+            OpenMenu(mainMenu);
         
         }
 
@@ -58,6 +62,7 @@ namespace UserMenus
             pauseMenu2.Load(CM);
             ruleMenu1.Load(CM);
             ruleMenu2.Load(CM);
+            mainMenu.Load(CM);
         }
 
 
@@ -80,6 +85,12 @@ namespace UserMenus
 
             if (team == Manager.Team1) OpenMenu(pauseMenu1);
             else OpenMenu(pauseMenu2);
+
+        }
+
+        public void MainMenu()
+        {
+            OpenMenu(mainMenu);
 
         }
 

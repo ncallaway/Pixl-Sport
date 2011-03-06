@@ -46,7 +46,7 @@ namespace Pixl_Sport
 
         public override void Execute(Team T)
         {
-            T.Score += scoreDelta;
+            if( T != null) T.Score += scoreDelta;
             manager.SetupKickoff();
            
         }

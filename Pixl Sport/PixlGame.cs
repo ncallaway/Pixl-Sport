@@ -21,6 +21,8 @@ namespace Pixl_Sport
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        //GamerServicesComponent GSC; 
+
         GameManager gm;
 
         public PixlGame()
@@ -31,6 +33,7 @@ namespace Pixl_Sport
             graphics.PreferredBackBufferHeight = 768;
             Content.RootDirectory = "Content";
 
+           // Components.Add(new GamerServicesComponent(this));
             
         }
 

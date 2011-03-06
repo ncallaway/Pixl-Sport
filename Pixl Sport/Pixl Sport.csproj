@@ -93,8 +93,10 @@
     <Compile Include="JudgementsFolder\RedCard.cs" />
     <Compile Include="JudgementsFolder\ScoreExchange.cs" />
     <Compile Include="UI\JudgementItem.cs" />
+    <Compile Include="UI\MainMenu.cs" />
     <Compile Include="UI\Menu.cs" />
     <Compile Include="UI\MenuItem.cs" />
+    <Compile Include="UI\NewGameItem.cs" />
     <Compile Include="UI\RuleImplementerItem.cs" />
     <Compile Include="UI\RuleItem.cs" />
     <Compile Include="UI\RuleMenu.cs" />

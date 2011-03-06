@@ -21,7 +21,7 @@ namespace Pixl_Sport
         }
 
         private String teamName;
-        public String TeamName { get { return teamName; } }
+        public String TeamName { get { return teamName; } set { teamName = value; } }
 
         private Color teamColor;
         public Color Color { get { return teamColor; } set { teamColor = value; } }

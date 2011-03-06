@@ -51,7 +51,6 @@ namespace Pixl_Sport
         public void PauseSounds()
         {
             foreach( SoundEffectInstance I in currentSounds) I.Pause();
-
         }
 
         public void ResumeSounds()
@@ -68,7 +67,6 @@ namespace Pixl_Sport
         {
             loadSound(CM, "thump1", "Kick");
             loadSound(CM, "explosion6", "Bomb");
-            
         }
 
 

@@ -84,9 +84,9 @@ namespace Pixl_Sport
             switch (m_Mode)
             {
                 case InputMode.Player1:
-                    return ((m_newState.IsKeyDown(Keys.W) && m_oldState.IsKeyUp(Keys.W)) || m_newControllerState[0].ThumbSticks.Left.Y > 0 && m_oldControllerState[0].ThumbSticks.Left.Y == 0);
+                    return ((m_newState.IsKeyDown(Keys.W) && m_oldState.IsKeyUp(Keys.W)) || m_newControllerState[0].ThumbSticks.Left.Y > .4f && m_oldControllerState[0].ThumbSticks.Left.Y <=.4f);
                 case InputMode.Player2:
-                    return ((m_newState.IsKeyDown(Keys.Up) && m_oldState.IsKeyUp(Keys.Up)) || m_newControllerState[1].ThumbSticks.Left.Y > 0 && m_oldControllerState[1].ThumbSticks.Left.Y == 0);
+                    return ((m_newState.IsKeyDown(Keys.Up) && m_oldState.IsKeyUp(Keys.Up)) || m_newControllerState[1].ThumbSticks.Left.Y > 4f && m_oldControllerState[1].ThumbSticks.Left.Y <= .4f);
                     ;
                 default:
                     throw new NotImplementedException("Received unexpected input mode");
@@ -112,9 +112,9 @@ namespace Pixl_Sport
             switch (m_Mode)
             {
                 case InputMode.Player1:
-                    return ((m_newState.IsKeyDown(Keys.S) && m_oldState.IsKeyUp(Keys.S)) || m_newControllerState[0].ThumbSticks.Left.Y < 0 && m_oldControllerState[0].ThumbSticks.Left.Y == 0);
+                    return ((m_newState.IsKeyDown(Keys.S) && m_oldState.IsKeyUp(Keys.S)) || m_newControllerState[0].ThumbSticks.Left.Y < -.4f && m_oldControllerState[0].ThumbSticks.Left.Y >= -.4f);
                 case InputMode.Player2:
-                    return m_newState.IsKeyDown(Keys.Down) && m_oldState.IsKeyUp(Keys.Down) || (m_newControllerState[1].ThumbSticks.Left.Y < 0 && m_oldControllerState[1].ThumbSticks.Left.Y == 0);
+                    return m_newState.IsKeyDown(Keys.Down) && m_oldState.IsKeyUp(Keys.Down) || (m_newControllerState[1].ThumbSticks.Left.Y < -.4f && m_oldControllerState[1].ThumbSticks.Left.Y >= -.4f);
                     ;
                 default:
                     throw new NotImplementedException("Received unexpected input mode");
@@ -142,6 +142,37 @@ namespace Pixl_Sport
                     return (m_newState.IsKeyDown(Keys.D) || m_newControllerState[0].ThumbSticks.Left.X > 0);
                 case InputMode.Player2:
                     return (m_newState.IsKeyDown(Keys.Right) || m_newControllerState[1].ThumbSticks.Left.X > 0);
+
+                default:
+                    throw new NotImplementedException("Received unexpected input mode");
+            }
+
+        }
+
+        public bool IsMoveRightNewlyPressed()
+        {
+            switch (m_Mode)
+            {
+                case InputMode.Player1:
+                    return ((m_newState.IsKeyDown(Keys.D) && m_oldState.IsKeyUp(Keys.D)) || (m_newControllerState[0].ThumbSticks.Left.X > .4f && m_oldControllerState[0].ThumbSticks.Left.X <= .4f));
+                case InputMode.Player2:
+                    return ((m_newState.IsKeyDown(Keys.Right) && m_oldState.IsKeyUp(Keys.Right)) || (m_newControllerState[1].ThumbSticks.Left.X > .4f && m_oldControllerState[1].ThumbSticks.Left.X <= .4f));
+
+                default:
+                    throw new NotImplementedException("Received unexpected input mode");
+            }
+
+        }
+
+
+        public bool IsMoveLeftNewlyPressed()
+        {
+            switch (m_Mode)
+            {
+                case InputMode.Player1:
+                    return ((m_newState.IsKeyDown(Keys.A) && m_oldState.IsKeyUp(Keys.A)) || (m_newControllerState[0].ThumbSticks.Left.X < -.4f && m_oldControllerState[0].ThumbSticks.Left.X >= -.4f));
+                case InputMode.Player2:
+                    return ((m_newState.IsKeyDown(Keys.Left) && m_oldState.IsKeyUp(Keys.Left)) || (m_newControllerState[1].ThumbSticks.Left.X < -.4f && m_oldControllerState[1].ThumbSticks.Left.X >= -.4f));
 
                 default:
                     throw new NotImplementedException("Received unexpected input mode");
