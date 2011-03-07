@@ -24,8 +24,21 @@ namespace Pixl_Sport
         private Team.Position profession;
         public Team.Position Profession { get { return profession; } set { profession = value; } }
 
-        public bool OnField;
-        public bool IsOnFire;
+        private PlayerState state;
+        public PlayerState State { get { return state; } set { state = value; } }
+
+        public bool OnField { get { return ( state != PlayerState.NotPlaying ); } }
+        //public bool IsOnFire;
+
+        private TimeSpan flameTimeLeft;
+
+        public void Ignite()
+        {
+            state = PlayerState.OnFire;
+            if (HasBall) { Drop(); }
+            flameTimeLeft = new TimeSpan(0, 0, 10);
+        }
+
         private float cantCatch;
         private float catchTimer;
         public bool CantCatch { get { return cantCatch >catchTimer ; } set { catchTimer = 0; cantCatch = 500f; } }
@@ -99,13 +112,22 @@ namespace Pixl_Sport
             Vector2 drawLocation = (fieldOrigin + position) * scaleSize;
             Rectangle destination = new Rectangle((int)drawLocation.X, (int)drawLocation.Y, 3 * (int)scaleSize, 3 * (int)scaleSize);
 
-            if (IsOnFire) batch.Draw(pixels, destination, Color.Orange);
+            if (state == PlayerState.OnFire) batch.Draw(pixels, destination, Color.Orange);
             else batch.Draw(pixels, destination, team.Color);
         }
 
         public void Update(GameTime t)
         {
             if (CantCatch) catchTimer += t.ElapsedGameTime.Milliseconds;
+
+            if (state == PlayerState.OnFire)
+            {
+                flameTimeLeft -= t.ElapsedGameTime;
+                if (flameTimeLeft < TimeSpan.Zero)
+                {
+                    state = PlayerState.Normal;
+                }
+            }
 
 
             if (Tackling)
@@ -206,11 +228,11 @@ namespace Pixl_Sport
 
             Vector2 target = new Vector2((float)Math.Cos(deviation), (float)Math.Sin(deviation));
 
-
-            HeldBall.SendFlying(target, .2f , .1f);
-           // HeldBall.Possessor = null;
-           // HeldBall = null;
-            CantCatch = true;
+            if (HeldBall != null)
+            {
+                HeldBall.SendFlying(target, .2f, .1f);
+                CantCatch = true;
+            }
 
         }
 
@@ -221,7 +243,7 @@ namespace Pixl_Sport
             bool legal = true;
             foreach (TeamMember TM in opposing.Members)
             {
-                if(OnField&& TM.Bounds.Intersects(new BoundingBox( new Vector3(position + adjustment - Vector2.One, 0), new Vector3(position + adjustment + 2* Vector2.One, 2f)))) legal = false;
+                if(OnField && TM.Bounds.Intersects(new BoundingBox( new Vector3(position + adjustment - Vector2.One, 0), new Vector3(position + adjustment + 2* Vector2.One, 2f)))) legal = false;
 
             }
             foreach (TeamMember TM in team.Members)

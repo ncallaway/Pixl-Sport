@@ -140,6 +140,7 @@ namespace Pixl_Sport
         public void SendFlying(Vector2 direction, float Velocity, float verticalF)
         {
             if(Possessor!=null) Possessor.HeldBall = null;
+            Possessor = null;
             verticalForce = verticalF;
             velocity = Velocity;
             this.direction = direction;

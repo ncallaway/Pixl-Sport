@@ -27,6 +27,10 @@ namespace Pixl_Sport
 
          public virtual void Enforce(Team T, TeamMember TM)
          {
+             if (T == null || TM == null)
+             {
+                 return;
+             }
 
              switch (assignedJudgement.Judged)
              {

@@ -53,7 +53,7 @@ namespace Pixl_Sport
 
             for (int i = 0; i < 7; i++) {
                 TeamMember m = new TeamMember(this);
-               m.OnField = true;
+                m.State = PlayerState.Normal;
                 m.Number = i;
                 if (i < 3) {
                     m.Profession = Position.Bricky;

@@ -43,7 +43,7 @@ namespace Pixl_Sport
         public override void Execute(TeamMember TM) 
         {
             TM.CantCatch = true;
-            TM.IsOnFire = true;
+            TM.Ignite();
             if(TM.HasBall) TM.Drop();
         
         }
@@ -53,7 +53,7 @@ namespace Pixl_Sport
         {
             foreach (TeamMember TM in T.Members)
             {
-                TM.IsOnFire = true;
+                TM.Ignite();
                 TM.CantCatch = true;
 
                 if (TM.HasBall) TM.Drop();

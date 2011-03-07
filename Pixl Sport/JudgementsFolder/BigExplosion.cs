@@ -30,8 +30,8 @@ namespace Pixl_Sport
                 M.Ball.Possessor = null;
             }
             M.Ball.SendFlying(new Vector2((float)Math.Cos(degree), (float)Math.Sin(degree)), (float)Math.Sin(degree2), (float)Math.Cos(degree2));
-            foreach (TeamMember TM2 in M.Team1.Members) if (TM2.Bounds.Intersects(new BoundingSphere(new Vector3(M.Ball.Position, 0f), 30f))){ TM2.Stun(4000); TM2.IsOnFire = true;}
-            foreach (TeamMember TM2 in M.Team2.Members) if (TM2.Bounds.Intersects(new BoundingSphere(new Vector3(M.Ball.Position, 0f), 30f))) { TM2.Stun(4000); TM2.IsOnFire = true; }
+            foreach (TeamMember TM2 in M.Team1.Members) if (TM2.Bounds.Intersects(new BoundingSphere(new Vector3(M.Ball.Position, 0f), 30f))){ TM2.Stun(4000); TM2.Ignite();}
+            foreach (TeamMember TM2 in M.Team2.Members) if (TM2.Bounds.Intersects(new BoundingSphere(new Vector3(M.Ball.Position, 0f), 30f))) { TM2.Stun(4000); TM2.Ignite(); }
            
 
 

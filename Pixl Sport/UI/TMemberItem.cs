@@ -25,8 +25,8 @@ namespace UserMenus
 
         public override void Draw(SpriteBatch batch, SpriteFont font, int xpos, int ypos)
         {
-            if(subject.OnField)batch.DrawString(font, subject.Name + "  " + subject.Number + "  " + subject.Profession.ToString(), new Vector2(xpos, ypos), subject.Team.Color);
-            else batch.DrawString(font, subject.Name + "  " + subject.Number + "  " + subject.Profession.ToString(), new Vector2(xpos, ypos), Color.White);
+            if(subject.State == PlayerState.NotPlaying) batch.DrawString(font, subject.Name + "  " + subject.Number + "  " + subject.Profession.ToString(), new Vector2(xpos, ypos), Color.White);
+            else batch.DrawString(font, subject.Name + "  " + subject.Number + "  " + subject.Profession.ToString(), new Vector2(xpos, ypos), subject.Team.Color); 
            
 
         }

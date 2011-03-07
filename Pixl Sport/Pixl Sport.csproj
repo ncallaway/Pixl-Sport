@@ -92,6 +92,7 @@
     <Compile Include="JudgementsFolder\Rebound.cs" />
     <Compile Include="JudgementsFolder\RedCard.cs" />
     <Compile Include="JudgementsFolder\ScoreExchange.cs" />
+    <Compile Include="PlayerState.cs" />
     <Compile Include="UI\JudgementItem.cs" />
     <Compile Include="UI\MainMenu.cs" />
     <Compile Include="UI\Menu.cs" />
