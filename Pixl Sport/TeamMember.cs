@@ -31,6 +31,7 @@ namespace Pixl_Sport
         //public bool IsOnFire;
 
         private TimeSpan flameTimeLeft;
+        private TimeSpan stunnedTimeLeft;
 
         public void Ignite()
         {
@@ -129,6 +130,15 @@ namespace Pixl_Sport
                 }
             }
 
+            if (state == PlayerState.Stunned)
+            {
+                stunnedTimeLeft -= t.ElapsedGameTime;
+                if (stunnedTimeLeft < TimeSpan.Zero)
+                {
+                    state = PlayerState.Normal;
+                }
+            }
+
 
             if (Tackling)
             {
@@ -144,7 +154,7 @@ namespace Pixl_Sport
 
                 if (!PlayerControlled)
                 {
-                //   ai.Update(t);
+                   ai.Update(t);
                 }
 
                 trackMovingAverage();
@@ -157,7 +167,8 @@ namespace Pixl_Sport
 
         public void Stun(int time)
         {
-            ai.Stun(new TimeSpan(0, 0, 0, 0, time));
+            state = PlayerState.Stunned;
+            stunnedTimeLeft = new TimeSpan(0, 0, 0, 0, time);
         }
 
         private void trackMovingAverage()
@@ -297,7 +308,7 @@ namespace Pixl_Sport
 
         public void Hit(TeamMember victim)
         {
-            victim.ai.Stun(new TimeSpan(0,0,0,0,2000));
+            victim.Stun(2000);
             if (victim.HasBall) victim.Drop();
         }
 

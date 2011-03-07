@@ -42,14 +42,9 @@ namespace Pixl_Sport.AI
             this.player = player;
             instruction = TeamAI.Instruction.None;
             action = Action.NoAction;
+            actionTimeSpan = TimeSpan.Zero;
 
             parentAi = player.Team.AI;
-        }
-
-        public void Stun(TimeSpan duration)
-        {
-            action = Action.Stunned;
-            actionTimeSpan = duration;
         }
 
         private TeamAI.Instruction instruction;
@@ -119,7 +114,7 @@ namespace Pixl_Sport.AI
         private void setActionForInstruction()
         {
             /* SPECIAL ACTIONS!! */
-            if (action == Action.Stunned) { return; }
+            if (player.State != PlayerState.Normal) { return; }
 
             switch (instruction) {
                 case TeamAI.Instruction.AcquireBall:
@@ -252,6 +247,9 @@ namespace Pixl_Sport.AI
 
         private void performAction(GameTime t)
         {
+            if (player.State == PlayerState.Stunned) { return; }
+            if (player.State == PlayerState.OnFire) { performOnFire(t); return; }
+
             switch (action) {
                 case Action.MoveToBall:
                     performMoveToBall();
@@ -274,6 +272,24 @@ namespace Pixl_Sport.AI
                     performWait();
                     break;
             }
+        }
+
+        private void performOnFire(GameTime t)
+        {
+            actionTimeSpan -= t.ElapsedGameTime;
+
+            if (actionTimeSpan < TimeSpan.Zero)
+            {
+                Random rand = new Random();
+                int miliseconds = rand.Next(500, 1000);
+                actionTimeSpan = new TimeSpan(0, 0, 0, 0, miliseconds);
+
+                actionPosition = new Vector2((float)rand.NextDouble() * - .5f, (float)rand.NextDouble() - .5f );
+                actionPosition.Normalize();
+            }
+
+            actionPosition.Normalize();
+            player.UpdatePosition(actionPosition * TeamMember.PLAYER_SPEED);
         }
 
         private void performCreateClearLineBetweenBall()
